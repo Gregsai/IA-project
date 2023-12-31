@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <header>
+      <div id="header-left-part">
+        <a [routerLink]="['/']">
+          <img src="assets/images/trophee.png" alt="trophee">
+        </a>
+        <p>IA PROJECT</p>
+      </div>
+      <div id="header-right-part">
+        <ul class="sections">
+          <li><a [routerLink] = "['tournaments']">Tournaments</a></li>
+          <app-auth></app-auth>
+        </ul>
+      </div>
+    </header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+    <footer>
+      <p>Realized by <br>SAILLY Grégory</p>
+    </footer>
+  </body>
+</html>
