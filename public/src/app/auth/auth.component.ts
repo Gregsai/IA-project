@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
 import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -15,6 +15,8 @@ export class AuthComponent {
   lastName: string = '';
   email: string = '';
   password: string = '';
+  @ViewChild('closeBtn') closeBtn!: ElementRef<HTMLButtonElement>;
+
   /**
   loggedIn: boolean = false;
   userEmail: string = '';
@@ -32,6 +34,13 @@ export class AuthComponent {
     private router: Router
     ) {}
 
+    resetParameters(): void {
+      this.firstName = '';
+      this.lastName = '';
+      this.email = '';
+      this.password = '';
+    }
+
     signUp(): void {
       const signUpData = {
         firstName: this.firstName,
@@ -44,7 +53,22 @@ export class AuthComponent {
         .subscribe(
           (response) => {
             console.log('Inscription réussie :', response);
-            this.router.navigate(['/verifyAccount', this.email]);
+            if (this.closeBtn) {
+              this.closeBtn.nativeElement.click();
+            }
+            localStorage.setItem('tempEmail', this.email);
+
+
+            // Réinitialiser les paramètres avant la redirection
+            // this.resetParameters();
+
+            const email = (localStorage.getItem('tempEmail')|| "").replace(/\./g, '_');
+
+            // Vérifier si l'email est disponible et rediriger vers la route verifyAccount
+            if (email) {
+              // Utiliser window.location.href pour recharger la page avec la nouvelle URL
+              window.location.href = `/verifyAccount/${email}`;
+            }
           },
           (error) => {
             console.error('Erreur lors de l\'inscription :', error);

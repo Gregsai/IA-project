@@ -1,1 +1,8 @@
-<p>verify-account works!</p>
+<div *ngIf="isEmailSent" class="email-sent-page">
+  <h1>Email Sent</h1>
+  <p>An email has been sent to your address. Please check your inbox.</p>
+  <div class="actions">
+    <button class="btn btn-primary" (click)="resendEmail()">Resend Email</button>
+    <button class="btn btn-secondary" (click)="navigateToHome()">Go to Home</button>
+  </div>
+</div>

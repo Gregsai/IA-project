@@ -4,9 +4,18 @@ const authService = require("../services/authenticationService");
 async function signUp(req, res) {
     try {
       const { firstName, lastName, email, password } = req.body;
-      const userEmail = await authService.signUpUser(firstName, lastName, email, password);
-      const response = await authService.sendConfirmationEmail(userEmail);
-      res.status(201).json(response);
+      await authService.signUpUser(firstName, lastName, email, password);
+      res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  
+  async function sendConfirmationEmail(req, res) {
+    try {
+      const { email } = req.body;
+      const response = await authService.sendConfirmationEmail(email);
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -37,6 +46,7 @@ async function passwordForgotten(req, res){
 
 module.exports = {
     signUp,
+    sendConfirmationEmail,
     confirmAccount,
     signIn,
     logOut,
