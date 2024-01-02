@@ -6,6 +6,7 @@ const pool = require("../../config/database");
 
 async function signUpUser(firstName, lastName, email, password) {
   try {
+    console.log("signUpUser", firstName, lastName, email, password)
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User(firstName, lastName, email, hashedPassword, null, false);
@@ -25,6 +26,8 @@ async function signUpUser(firstName, lastName, email, password) {
 
 async function sendConfirmationEmail(email) {
   try {
+    const emailFormatted = email.replace(/_/g, '.');
+    console.log("emailFormatted", email)
     const confirmationToken = jwt.sign({ email }, 'secret', { expiresIn: '24h' });
 
     const transporter = nodemailer.createTransport({
@@ -37,12 +40,12 @@ async function sendConfirmationEmail(email) {
 
     const mailOptions = {
       from: 'internetapplication7@gmail.com',
-      to: email,
+      to: emailFormatted,
       subject: 'Verify your email address',
       html: `
       <p>
       Click on  
-      <a href="http://localhost:3000/auth/confirm/${confirmationToken}">this link</a> 
+      <a href="http://localhost:4200/verifyAccount/${email}">this link</a> 
       to verify your account.
       </p>`,
     };
