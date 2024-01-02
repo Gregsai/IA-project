@@ -1,7 +1,44 @@
 .sign-in-up{
-  color: white;
-  background-color: #00cc66;
-  border-color: #00cc66;
+  color: black;
+  background-color: #EBF82C;
+  border-color: #EBF82C;
   width: 100%;
   font-weight: bold;
+}
+
+.log-out{
+  width: 100%;
+  font-weight: bold;
+}
+
+.modal-content{
+  color: #14213D;
+  font-weight: bold;
+  background-color: #E5E5E5;
+  border: solid 1px #14213D;
+  border-radius: 20px;
+}
+
+.modal-title{
+  font-weight: bold;
+}
+
+#buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#buttons > .btn{
+  color: black;
+  width: 70%;
+  font-weight: bold;
+  margin-inline: 10px;
+  background-color: #EBF82C;
+  border-color: #EBF82C;
+}
+
+button img{
+  width: 20px;
 }

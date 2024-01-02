@@ -7,16 +7,30 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent {
+  userLoggedIn: boolean = false;
+  authState: string = 'sign-in'
   firstName: string = '';
   lastName: string = '';
   email: string = '';
   password: string = '';
+  /**
   loggedIn: boolean = false;
   userEmail: string = '';
   message: string = '';
+  signUpError: string = '';
+  signInError: string = '';
+  showSignUp: boolean = false;
+  status: string = '';
+  */
+
 
   constructor(private authService: AuthService) {}
 
+  signIn():void{}
+  signUp():void{}
+  forgotPassword():void{}
+  logOut():void{}
+/**
   register(): void {
     const userData = {
       firstName: this.firstName,
@@ -85,4 +99,6 @@ export class AuthComponent {
       }
     );
   }
+
+  **/
 }
