@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-verify-account',
@@ -9,14 +10,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class VerifyAccountComponent {
   token: string = '';
-  isVerified: boolean = false; // Indique si le compte a été vérifié avec succès
-  showMessage: boolean = false; // Indique si le message de succès doit être affiché
-  disableButton: boolean = false; // Indique si le bouton doit être désactivé
+  showMessage: boolean = false;
+  message: string = '';
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -28,34 +28,30 @@ export class VerifyAccountComponent {
   }
 
   verifyAccount(): void {
-    this.isVerified = true; // Marque la vérification du compte
-
-    // Désactive le bouton pendant 5 secondes
-    this.disableButton = true;
-    setTimeout(() => {
-      this.disableButton = false;
-    }, 5000);
-
-    // Envoie la requête HTTP pour vérifier le compte
-    this.http.get<any>('http://localhost:3000/auth/verifyAccount/' + this.token)
+    this.authenticationService.verifyAccount(this.token)
       .subscribe(
-        (response) => {
+        (response : any) => {
           console.log('Account verified:', response);
-          // Affiche le message de succès après 5 secondes
+          this.message = response.message;
           this.showMessage = true;
           setTimeout(() => {
             this.showMessage = false;
+            this.message = '';
           }, 5000);
         },
         (error) => {
           console.error('Error verifying account:', error);
-          // Gérez les erreurs de l'API si nécessaire
+          this.message = error.message;
+          this.showMessage = true;
+          setTimeout(() => {
+            this.showMessage = false;
+            this.message = '';
+          }, 5000);
         }
       );
   }
 
   navigateToHome(): void {
     this.router.navigateByUrl('', { replaceUrl: true });
-    history.replaceState({}, '', '/');
   }
 }

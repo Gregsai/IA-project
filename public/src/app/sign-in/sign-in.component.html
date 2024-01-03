@@ -3,13 +3,14 @@
   <div class="form-content">
     <form #userForm="ngForm">
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
+        <label for="email-sign-in">Email</label>
+        <input type="text" class="form-control" id="email-sign-in" name="email-sign-in" [(ngModel)]="email">
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password">
+        <label for="password-sign-in">Password</label>
+        <input type="password" class="form-control" id="password-sign-in" name="password-sign-in" [(ngModel)]="password">
       </div>
+      <p *ngIf="displayErrorMessage" class="error-message">{{ errorMessage }}</p>
       <div id="buttons">
         <a [routerLink]="['/password-forgotten']">
           Password forgotten ?

@@ -12,14 +12,12 @@ export class SignInComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
-  displayErrorMessage: boolean = false;
+  displayErrorMessage: boolean = true;
 
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
-  ){
-
-  }
+  ){}
 
   signIn() {
     const signInData = {
@@ -38,6 +36,15 @@ export class SignInComponent {
     else if (!this.authenticationService.emailVerified(this.email)){
       this.errorMessage = 'Please verify your email';
       this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
+    }
+
+    if(this.errorMessage !== ''){
+      this.displayErrorMessage = true;
+      setTimeout(() => {
+        this.displayErrorMessage = false;
+        this.errorMessage = '';
+      }, 5000);
+      return;
     }
 
     this.authenticationService.signIn(signInData).subscribe(

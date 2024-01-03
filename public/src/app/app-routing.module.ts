@@ -7,12 +7,14 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { PasswordForgottenComponent } from './password-forgotten/password-forgotten.component';
 import { HomeComponent } from './home/home.component';
 import { SendVerificationEmailComponent } from './send-verification-email/send-verification-email.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'sign-up', component: SignUpComponent},
   {path: 'sign-in', component: SignInComponent},
   {path: 'password-forgotten', component: PasswordForgottenComponent},
+  {path: 'reset-password/:token', component: ResetPasswordComponent},
   {path: 'verify-account/:email/:send-email', component: SendVerificationEmailComponent },
   {path: 'verify-account/:token', component: VerifyAccountComponent },
   {path: 'tournaments', component: AuthComponent}

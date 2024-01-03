@@ -61,4 +61,9 @@ export class AuthenticationService {
     const sendResetPasswordEmailURL = `${this.baseURL}/authentication/send-reset-password-email`;
     return this.http.post(sendResetPasswordEmailURL, { email });
   }
+
+  verifyAccount(token: string) {
+    const verifyAccountURL = `${this.baseURL}/authentication/verify-account/${token}`;
+    return this.http.get(verifyAccountURL);
+  }
 }

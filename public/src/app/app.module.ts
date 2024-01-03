@@ -12,6 +12,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { PasswordForgottenComponent } from './password-forgotten/password-forgotten.component';
 import { HomeComponent } from './home/home.component';
 import { SendVerificationEmailComponent } from './send-verification-email/send-verification-email.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SendVerificationEmailComponent } from './send-verification-email/send-v
     SignInComponent,
     PasswordForgottenComponent,
     HomeComponent,
-    SendVerificationEmailComponent
+    SendVerificationEmailComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

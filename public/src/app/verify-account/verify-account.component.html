@@ -1,14 +1,11 @@
 <div class="user-form">
   <h3>Account verification</h3>
   <div class="form-content">
-    <div *ngIf="isVerified" class="success-message">
-      Your account has been verified successfully.
+    <div *ngIf="showMessage" class="success-message">
+     {{message}}
     </div>
     <div id="buttons">
       <button class="btn btn-secondary" (click)="navigateToHome()">Go to Home</button>
-    </div>
-    <div *ngIf="showMessage" class="success-message">
-      Verification successful. This message will disappear in 5 seconds.
     </div>
   </div>
 </div>
