@@ -17,7 +17,7 @@ async function signUpUser(firstName, lastName, email, password) {
     const result = await pool.query(queryText, values);
     const insertedEmail = result.rows[0].email;
 
-    return insertedEmail; // Retourne l'email pour l'envoi de l'e-mail de confirmation
+    return insertedEmail;
   } catch (error) {
     console.error('Error during registration :', error);
     throw new Error('Error during registration.');
@@ -44,8 +44,8 @@ async function sendConfirmationEmail(email) {
       subject: 'Verify your email address',
       html: `
       <p>
-      Click on  
-      <a href="http://localhost:4200/verifyAccount/${email}">this link</a> 
+      Click on
+      <a href="http://localhost:4200/verify-account/${confirmationToken}">this link</a> 
       to verify your account.
       </p>`,
     };

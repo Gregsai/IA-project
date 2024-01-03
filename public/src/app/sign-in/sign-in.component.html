@@ -1,0 +1,26 @@
+<div class="user-form">
+  <h3>Sign In</h3>
+  <div class="form-content">
+    <form #userForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password">
+      </div>
+      <div id="buttons">
+        <a [routerLink]="['/password-forgotten']">
+          Password forgotten ?
+        </a>
+        <button type="button" class="btn" (click)="signIn()">
+          Sign In
+        </button>
+        <a [routerLink]="['/sign-up']">
+          Don't have an account? Sign Up
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

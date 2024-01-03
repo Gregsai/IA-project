@@ -15,6 +15,10 @@
   margin: 0 auto;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
 
 #buttons {
   display: flex;
@@ -26,7 +30,7 @@
 #buttons > .btn {
   background-color: #EBF82C;
   color: black;
-  width: 33%;
+  width: 20%;
 }
 
 #buttons > .btn:hover {

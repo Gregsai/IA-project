@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-verify-account',
-  templateUrl: './verify-account.component.html',
-  styleUrls: ['./verify-account.component.css']
+  selector: 'app-send-verification-email',
+  templateUrl: './send-verification-email.component.html',
+  styleUrl: './send-verification-email.component.css'
 })
-export class VerifyAccountComponent {
-  token: string = '';
-  isVerified: boolean = false; // Indique si le compte a été vérifié avec succès
+export class SendVerificationEmailComponent implements OnInit {
+  email: string = '';
+  isEmailSent: boolean = false; // Indique si l'e-mail a été envoyé avec succès
   showMessage: boolean = false; // Indique si le message de succès doit être affiché
   disableButton: boolean = false; // Indique si le bouton doit être désactivé
 
@@ -21,14 +21,13 @@ export class VerifyAccountComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.token = params['token'];
+      this.email = params['email'];
     });
-    this.verifyAccount();
     history.replaceState({}, '', '/');
   }
 
-  verifyAccount(): void {
-    this.isVerified = true; // Marque la vérification du compte
+  sendEmail(): void {
+    this.isEmailSent = true; // Marque l'envoi de l'e-mail
 
     // Désactive le bouton pendant 5 secondes
     this.disableButton = true;
@@ -36,11 +35,11 @@ export class VerifyAccountComponent {
       this.disableButton = false;
     }, 5000);
 
-    // Envoie la requête HTTP pour vérifier le compte
-    this.http.get<any>('http://localhost:3000/auth/verifyAccount/' + this.token)
+    // Envoie la requête HTTP pour envoyer l'e-mail
+    this.http.post<any>('http://localhost:3000/auth/sendConfirmationEmail', { email: this.email })
       .subscribe(
         (response) => {
-          console.log('Account verified:', response);
+          console.log('Confirmation email sent:', response);
           // Affiche le message de succès après 5 secondes
           this.showMessage = true;
           setTimeout(() => {
@@ -48,7 +47,7 @@ export class VerifyAccountComponent {
           }, 5000);
         },
         (error) => {
-          console.error('Error verifying account:', error);
+          console.error('Error sending confirmation email:', error);
           // Gérez les erreurs de l'API si nécessaire
         }
       );

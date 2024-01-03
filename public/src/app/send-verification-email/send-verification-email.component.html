@@ -1,14 +1,13 @@
 <div class="user-form">
-  <h3>Account verification</h3>
+  <h3>Send Email</h3>
   <div class="form-content">
-    <div *ngIf="isVerified" class="success-message">
-      Your account has been verified successfully.
-    </div>
+    <p>Send an email to verify your account.</p>
     <div id="buttons">
+      <button class="btn btn-primary" (click)="sendEmail()" [disabled]="disableButton">Send Email</button>
       <button class="btn btn-secondary" (click)="navigateToHome()">Go to Home</button>
     </div>
     <div *ngIf="showMessage" class="success-message">
-      Verification successful. This message will disappear in 5 seconds.
+      Email sent successfully. This message will disappear in 5 seconds.
     </div>
   </div>
 </div>

@@ -6,10 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseURL = 'http://localhost:3000'; // Votre URL backend
+  private baseURL = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
+  signUp(signUpData: any) {
+    const email = signUpData.email;
+    return this.http.post('http://localhost:3000/auth/signUp', signUpData)
+  }
   registerUser(userData: any): Observable<any> {
     return this.http.post<any>(`${this.baseURL}/register`, userData);
   }
