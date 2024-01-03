@@ -10,7 +10,7 @@ export class AuthenticationService {
   private baseURL = 'http://localhost:3000';
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
     ) {
 
     }
@@ -33,32 +33,32 @@ export class AuthenticationService {
   }
 
   emailAlreadyExists(email: string): Observable<boolean>{
-    const emailAlreadyExistsUrl = `${this.baseURL}/auth/email-already-exists`;
+    const emailAlreadyExistsUrl = `${this.baseURL}/authentication/email-already-exists`;
     return this.http.get(emailAlreadyExistsUrl, { params: { email } }) as Observable<boolean>;
   }
 
   emailVerified(email: string): Observable<boolean>{
-    const emailVerifiedUrl = `${this.baseURL}/auth/email-verified`;
+    const emailVerifiedUrl = `${this.baseURL}/authentication/email-verified`;
     return this.http.get(emailVerifiedUrl, { params: { email } }) as Observable<boolean>;
   }
 
   signUp(signUpData: any) {
-    const signUpURL = `${this.baseURL}/auth/sign-up`;
+    const signUpURL = `${this.baseURL}/authentication/sign-up`;
     return this.http.post(signUpURL, signUpData);
   }
 
   signIn(signUpData: any) {
-    const signInURL = `${this.baseURL}/auth/sign-in`;
+    const signInURL = `${this.baseURL}/authentication/sign-in`;
     return this.http.post(signInURL, signUpData);
   }
 
   sendVerificationEmail(email: string) {
-    const sendVerificationEmailURL = `${this.baseURL}/auth/send-verification-email`;
+    const sendVerificationEmailURL = `${this.baseURL}/authentication/send-verification-email`;
     return this.http.post(sendVerificationEmailURL, { email });
   }
 
   sendResetPasswordEmail(email: string) {
-    const sendResetPasswordEmailURL = `${this.baseURL}/auth/send-reset-password-email`;
+    const sendResetPasswordEmailURL = `${this.baseURL}/authentication/send-reset-password-email`;
     return this.http.post(sendResetPasswordEmailURL, { email });
   }
 }

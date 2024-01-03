@@ -1,9 +1,6 @@
 <button type="button" class="btn sign-in-up" [routerLink]="['sign-up']">
   Sign In/Up
 </button>
-<button *ngIf="!userLoggedIn" type="button" class="btn sign-in-up" data-toggle="modal" data-target="#userModal">
-  Sign In/Up
-</button>
 
 <button *ngIf="userLoggedIn" type="button" class="btn btn-danger log-out" (click)="logOut()">
   Log Out

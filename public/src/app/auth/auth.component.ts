@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
-import { AuthService } from '../authentication.service';
+import { AuthenticationService } from '../authentication.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -29,7 +29,7 @@ export class AuthComponent {
 
 
   constructor(
-    private authService: AuthService,
+    private authenticationService: AuthenticationService,
     private http: HttpClient,
     private router: Router
     ) {}
