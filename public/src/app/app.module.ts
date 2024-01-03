@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TestComponent } from './test/test.component';
 import { AuthComponent } from './auth/auth.component';
 import { VerifyAccountComponent } from './verify-account/verify-account.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -17,7 +16,6 @@ import { SendVerificationEmailComponent } from './send-verification-email/send-v
 @NgModule({
   declarations: [
     AppComponent,
-    TestComponent,
     AuthComponent,
     VerifyAccountComponent,
     SignUpComponent,

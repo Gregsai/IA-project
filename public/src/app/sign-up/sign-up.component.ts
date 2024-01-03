@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class SignUpComponent {
   password: string = '';
 
   constructor(
-    private authService: AuthService,
+    private authenticationService: AuthenticationService,
     private router: Router
   ) {}
 
@@ -26,7 +26,7 @@ export class SignUpComponent {
       password: this.password
     }
 
-    this.authService.signUp(signUpData).subscribe(
+    this.authenticationService.signUp(signUpData).subscribe(
       (response) => {
         localStorage.setItem('tempEmail', this.email);
         this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
