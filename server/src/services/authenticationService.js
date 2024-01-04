@@ -45,10 +45,7 @@ async function emailAlreadyExists(email) {
 
 async function sendConfirmationEmail(email) {
   try {
-    const emailFormatted = email.replace(/_/g, '.');
-    console.log("emailFormatted", email)
     const confirmationToken = jwt.sign({ email }, 'secret', { expiresIn: '24h' });
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -59,16 +56,19 @@ async function sendConfirmationEmail(email) {
 
     const mailOptions = {
       from: 'internetapplication7@gmail.com',
-      to: emailFormatted,
-      subject: 'Verify your email address',
+      to: email,
+      subject: 'IA Project Account verification',
       html: `
       <p>
-      Click on
-      <a href="http://localhost:4200/verify-account/${confirmationToken}">this link</a> 
-      to verify your account.
-      </p>`,
-    };
-
+        Click the button below to verify your account:
+      </p>
+      <a href="http://localhost:4200/verify-account/${confirmationToken}" style="text-decoration: none;">
+        <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Verify Account
+        </button>
+      </a>
+    `,
+  };
     await transporter.sendMail(mailOptions);
     return { message: 'Confirmation email sent. Please check your inbox' };
   } catch (error) {
@@ -77,7 +77,7 @@ async function sendConfirmationEmail(email) {
   }
 }
 
-async function confirmUser(token) {
+async function verifyAccount(token) {
   try {
     const decoded = jwt.verify(token, 'secret');
     const email = decoded.email;
@@ -87,7 +87,7 @@ async function confirmUser(token) {
 
     await pool.query(confirmUserQuery, values);
 
-    return 'Account successfully activated. You will now be redirected to the main page.';
+    return { message: 'Account successfully activated. You will now be redirected to the main page.' };
   } catch (error) {
     console.error('Error occured during activation process :', error);
     throw new Error('Error occured during activation process.');
@@ -99,5 +99,5 @@ module.exports = {
   signUp,
   emailAlreadyExists,
   sendConfirmationEmail,
-  confirmUser,
+  verifyAccount,
 };

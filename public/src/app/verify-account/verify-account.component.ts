@@ -23,19 +23,19 @@ export class VerifyAccountComponent {
       this.token = params['token'];
     });
     this.verifyAccount();
-    history.replaceState({}, '', '/');
   }
 
   verifyAccount(): void {
+    console.log('Verification in progress');
     this.authenticationService.verifyAccount(this.token)
       .subscribe(
-        (response : any) => {
-          console.log('Account verified:', response);
+        (response: any) => {
           this.message = response.message;
           this.showMessage = true;
           setTimeout(() => {
             this.showMessage = false;
             this.message = '';
+            this.router.navigateByUrl('', { replaceUrl: true });
           }, 5000);
         },
         (error) => {
@@ -49,6 +49,7 @@ export class VerifyAccountComponent {
         }
       );
   }
+
 
   navigateToHome(): void {
     this.router.navigateByUrl('', { replaceUrl: true });

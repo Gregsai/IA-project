@@ -33,7 +33,7 @@ export class AuthenticationService {
   }
 
   emailAlreadyExists(email: string): Observable<boolean> {
-    const emailAlreadyExistsUrl = 'http://localhost:3000/authentication/email-already-exists';
+    const emailAlreadyExistsUrl = `${this.baseURL}/authentication/email-already-exists`;
     const params = new HttpParams().set('email', email);
     return this.http.get<boolean>(emailAlreadyExistsUrl, { params });
   }

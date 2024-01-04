@@ -23,8 +23,10 @@ export class SendVerificationEmailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.email = params['email'];
     });
-    history.replaceState({}, '', '/');
+    history.replaceState({}, '', '/verify-account');
   }
+
+
 
   sendEmail(): void {
     this.disableButton = true;
@@ -34,7 +36,6 @@ export class SendVerificationEmailComponent implements OnInit {
     this.authenticationService.sendVerificationEmail(this.email)
       .subscribe(
         (response) => {
-          console.log('Confirmation email sent:', response);
           this.showMessage = true;
           setTimeout(() => {
             this.showMessage = false;
