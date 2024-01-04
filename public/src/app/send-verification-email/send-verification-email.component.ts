@@ -23,7 +23,6 @@ export class SendVerificationEmailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.email = params['email'];
     });
-    history.replaceState({}, '', '/verify-account');
   }
 
 

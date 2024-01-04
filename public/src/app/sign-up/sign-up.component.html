@@ -23,7 +23,7 @@
         <button type="button" class="btn" (click)="signUp()">
           Sign Up
         </button>
-        <a [routerLink]="['/sign-in']">
+        <a href="#" (click)="redirectToSignIn($event)" [style.cursor]="'pointer'">
           Already have an account? Sign In
         </a>
       </div>

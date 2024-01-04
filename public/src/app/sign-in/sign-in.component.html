@@ -12,13 +12,13 @@
       </div>
       <p *ngIf="displayErrorMessage" class="error-message">{{ errorMessage }}</p>
       <div id="buttons">
-        <a [routerLink]="['/password-forgotten']">
+        <a href="#" (click)="redirectToPasswordForgotten($event)" [style.cursor]="'pointer'">
           Password forgotten ?
         </a>
         <button type="button" class="btn" (click)="signIn()">
           Sign In
         </button>
-        <a [routerLink]="['/sign-up']">
+        <a href="#" (click)="redirectToSignUp($event)" [style.cursor]="'pointer'">
           Don't have an account? Sign Up
         </a>
       </div>

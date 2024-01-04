@@ -1,68 +1,7 @@
-<button type="button" class="btn sign-in-up" [routerLink]="['sign-up']">
+<button *ngIf="userLoggedIn === 'disconnected'"type="button" class="btn sign-in-up" [routerLink]="['sign-up']">
   Sign In/Up
 </button>
 
-<button *ngIf="userLoggedIn" type="button" class="btn btn-danger log-out" (click)="logOut()">
+<button *ngIf="userLoggedIn === 'connected'" type="button" class="btn btn-danger log-out" (click)="logOut()">
   Log Out
 </button>
-
-<div class="modal" id="userModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          {{
-            authState === 'sign-in' ? 'Sign In' :
-            authState === 'sign-up' ? 'Sign Up' :
-            authState === 'password-forgotten' ? 'Password Forgotten' :
-            'Sign In'
-          }}
-        </h5>
-        <button type="button" class="close" #closeBtn data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <ng-container *ngIf="!userLoggedIn">
-          <form #userForm="ngForm">
-            <div *ngIf="authState === 'sign-up'" class="form-group">
-              <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="firstName">
-              </div>
-            </div>
-
-            <div *ngIf="authState === 'sign-up'" class="form-group">
-              <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="lastName">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="text" class="form-control" id="email" name="email" [(ngModel)]="email">
-            </div>
-            <div *ngIf="authState === 'sign-up' || authState === 'sign-in'" class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password">
-            </div>
-
-            <div id="buttons">
-              <a href="javascript:void(0)" *ngIf="authState === 'sign-in'" (click)="authState = 'password-forgotten'">
-                Forgotten Password ?
-              </a>
-              <button type="button" class="btn btn-primary" (click)="authState === 'sign-up' ? signUp() : authState === 'sign-in' ? signIn() : authState === 'password-forgotten' ? forgotPassword() : ''">
-                {{authState === 'sign-in' ? 'Sign In' : authState === 'sign-up' ? 'Sign Up' : authState === 'password-forgotten' ? 'Reset Password' : ''}}
-              </button>
-
-              <a href="javascript:void(0)" (click)="authState === 'sign-in' ? authState = 'sign-up' : authState='sign-in'">
-                {{authState === 'sign-in' ? 'Don\'t have an account? Sign Up' : authState === 'sign-up' ? 'Already have an account? Sign In' : authState === 'password-forgotten' ? 'Go back' : ''}}
-              </a>
-            </div>
-          </form>
-        </ng-container>
-      </div>
-    </div>
-  </div>
-</div>

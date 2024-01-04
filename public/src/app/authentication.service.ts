@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 
 export class AuthenticationService {
   private baseURL = 'http://localhost:3000';
+  private tokenKey = 'auth_token';
+  private expirationKey = 'auth_token_expiration';
 
   constructor(
     private http: HttpClient,
@@ -15,6 +17,38 @@ export class AuthenticationService {
 
     }
 
+  storeToken(token: string, expirationDate: Date): void {
+    localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem(this.expirationKey, expirationDate.toISOString());
+  }
+
+  logOut() {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.expirationKey);
+  }
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  getTokenExpiration(): Date | null {
+    const expiration = localStorage.getItem(this.expirationKey);
+    return expiration ? new Date(expiration) : null;
+  }
+
+  updateToken(token: string, expirationDate: Date): void {
+    this.storeToken(token, expirationDate);
+  }
+
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    const expiration = this.getTokenExpiration();
+
+    if (!token || !expiration) {
+      return false;
+    }
+
+    return new Date() < expiration;
+  }
   validateEmailFormat(email: string): boolean{
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -40,7 +74,8 @@ export class AuthenticationService {
 
   emailVerified(email: string): Observable<boolean>{
     const emailVerifiedUrl = `${this.baseURL}/authentication/email-verified`;
-    return this.http.get(emailVerifiedUrl, { params: { email } }) as Observable<boolean>;
+    const params = new HttpParams().set('email', email);
+    return this.http.get<boolean>(emailVerifiedUrl, { params });
   }
 
   signUp(signUpData: any) {

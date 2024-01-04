@@ -76,4 +76,9 @@ export class SignUpComponent {
       );
     }
   }
+
+  redirectToSignIn(event: Event){
+    event.preventDefault();
+    this.router.navigateByUrl('/sign-in', { replaceUrl: true });
+  }
 }
