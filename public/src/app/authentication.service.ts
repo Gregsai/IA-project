@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -32,9 +32,10 @@ export class AuthenticationService {
     return firstName.length >= 1;
   }
 
-  emailAlreadyExists(email: string): Observable<boolean>{
-    const emailAlreadyExistsUrl = `${this.baseURL}/authentication/email-already-exists`;
-    return this.http.get(emailAlreadyExistsUrl, { params: { email } }) as Observable<boolean>;
+  emailAlreadyExists(email: string): Observable<boolean> {
+    const emailAlreadyExistsUrl = 'http://localhost:3000/authentication/email-already-exists';
+    const params = new HttpParams().set('email', email);
+    return this.http.get<boolean>(emailAlreadyExistsUrl, { params });
   }
 
   emailVerified(email: string): Observable<boolean>{

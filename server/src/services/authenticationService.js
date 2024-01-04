@@ -4,15 +4,15 @@ const nodemailer = require("nodemailer");
 const User = require("../models/user");
 const pool = require("../../config/database");
 
-async function signUpUser(firstName, lastName, email, password) {
+async function signUp(firstName, lastName, email, password) {
   try {
     console.log("signUpUser", firstName, lastName, email, password)
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User(firstName, lastName, email, hashedPassword, null, false);
+    const newUser = new User(firstName, lastName, email, hashedPassword, null, false, null);
 
-    const queryText = 'INSERT INTO users (firstName, lastName, email, password, confirmationToken, confirmed) VALUES ($1, $2, $3, $4, $5, $6) RETURNING email';
-    const values = [newUser.firstName, newUser.lastName, newUser.email, newUser.password, null, newUser.confirmed];
+    const queryText = 'INSERT INTO users (firstName, lastName, email, password, confirmationToken, confirmed, resetToken) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING email';
+    const values = [newUser.firstName, newUser.lastName, newUser.email, newUser.password, null, newUser.confirmed, null];
 
     const result = await pool.query(queryText, values);
     const insertedEmail = result.rows[0].email;
@@ -21,6 +21,25 @@ async function signUpUser(firstName, lastName, email, password) {
   } catch (error) {
     console.error('Error during registration :', error);
     throw new Error('Error during registration.');
+  }
+}
+
+async function emailAlreadyExists(email) {
+  try {
+    const queryText = 'SELECT * FROM users WHERE email = $1';
+    const values = [email];
+
+    const result = await pool.query(queryText, values);
+    const user = result.rows[0];
+
+    if (user) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error during email existence checking :', error);
+    throw new Error('Error during email existence checking.');
   }
 }
 
@@ -75,24 +94,10 @@ async function confirmUser(token) {
   }
 }
 
-async function signInUser(email, password) {
-
-}
-
-async function logOutUser(email){
-
-}
-
-async function passwordForgottenUser(email){
-
-}
-
 
 module.exports = {
-  signUpUser,
+  signUp,
+  emailAlreadyExists,
   sendConfirmationEmail,
   confirmUser,
-  signInUser,
-  logOutUser,
-  passwordForgottenUser
 };

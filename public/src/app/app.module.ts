@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'; // Importez HttpClientModule
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -32,7 +33,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [provideHttpClient(withFetch()),],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

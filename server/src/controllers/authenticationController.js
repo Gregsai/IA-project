@@ -1,15 +1,58 @@
-// authenticationController.js
 const authService = require("../services/authenticationService");
 
 async function signUp(req, res) {
-    try {
-      const { firstName, lastName, email, password } = req.body;
-      await authService.signUpUser(firstName, lastName, email, password);
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+  try {
+    console.log("signUpUser", req.body)
+    const { firstName, lastName, email, password } = req.body;
+    await authService.signUp(firstName, lastName, email, password);
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
+}
+
+async function signIn(req, res) {
+
+}
+
+async function signOut(req, res) {
+
+}
+
+async function emailAlreadyExists(req, res) {
+  try {
+    const { email } = req.query;
+    const exists = await authService.emailAlreadyExists(email);
+    
+    if (exists) {
+      res.status(200).json({ exists: true, message: 'User exists' });
+    } else {
+      res.status(200).json({ exists: false, message: 'User does not exist' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+async function emailVerified(req, res) {
+
+}
+
+async function sendVerificationEmail(req, res) {
+
+}
+
+async function verifyAccount(req, res) {
+
+}
+
+async function sendResetPasswordEmail(req, res) {
+
+}
+
+async function resetPassword(req, res) {
+
+}
   
   async function sendConfirmationEmail(req, res) {
     try {
@@ -30,25 +73,15 @@ async function signUp(req, res) {
       res.status(500).send('Erreur lors de la confirmation du compte.');
     }
   }
-  
-
-async function signIn(req, res){
-
-}
-
-async function logOut(req, res){
-
-}
-
-async function passwordForgotten(req, res){
-
-}
 
 module.exports = {
-    signUp,
-    sendConfirmationEmail,
-    confirmAccount,
-    signIn,
-    logOut,
-    passwordForgotten
+  signUp,
+  signIn,
+  signOut,
+  emailAlreadyExists,
+  emailVerified,
+  sendVerificationEmail,
+  verifyAccount,
+  sendResetPasswordEmail,
+  resetPassword
 };

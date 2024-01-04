@@ -13,7 +13,7 @@ app.use(
 );
 app.use(express.json());
 
-app.use('/auth', authenticationRoutes);
+app.use('/authentication', authenticationRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

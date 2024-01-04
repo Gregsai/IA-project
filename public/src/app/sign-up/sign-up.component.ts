@@ -21,50 +21,60 @@ export class SignUpComponent {
   ) {}
 
   signUp() {
-    const signUpData={
+    const signUpData = {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
       password: this.password
-    }
-    if(!this.authenticationService.validateEmailFormat(this.email)){
-      this.errorMessage = 'Please enter a valid email (eg.. john.doe@gmail.com)';
-    }
-    else if (!this.authenticationService.validatePasswordFormat(this.password)){
+    };
+
+    if (!this.authenticationService.validateFirstNameFormat(this.firstName)) {
+      this.errorMessage = 'Please enter a valid first name (non null)';
+    } else if (!this.authenticationService.validateLastNameFormat(this.lastName)) {
+      this.errorMessage = 'Please enter a valid last name (non null)';
+    } else if (!this.authenticationService.validateEmailFormat(this.email)) {
+      this.errorMessage = 'Please enter a valid email (e.g., john.doe@gmail.com)';
+    } else if (!this.authenticationService.validatePasswordFormat(this.password)) {
       this.errorMessage = 'Please enter a valid password (at least 4 characters)';
+    } else {
+      this.authenticationService.emailAlreadyExists(this.email).subscribe(
+        (response: any) => {
+          if (response.exists && response.exists === true) {
+            this.errorMessage = 'Email already exists';
+            this.displayErrorMessage = true;
+            setTimeout(() => {
+              this.displayErrorMessage = false;
+              this.errorMessage = '';
+            }, 5000);
+          } else {
+            this.authenticationService.signUp(signUpData).subscribe(
+              (signUpResponse) => {
+                localStorage.setItem('tempEmail', this.email);
+                this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
+              },
+              (signUpError) => {
+                console.error('Error during sign up:', signUpError);
+                this.errorMessage = signUpError.message;
+                this.displayErrorMessage = true;
+                setTimeout(() => {
+                  this.displayErrorMessage = false;
+                  this.errorMessage = '';
+                }, 5000);
+              }
+            );
+          }
+        },
+        (error) => {
+          console.error('Error while checking email existence:', error);
+          this.errorMessage = error.message;
+          this.displayErrorMessage = true;
+          setTimeout(() => {
+            this.displayErrorMessage = false;
+            this.errorMessage = '';
+          }, 5000);
+        }
+      );
     }
-    else if (this.authenticationService.emailAlreadyExists(this.email)){
-      this.errorMessage = 'This email is already affiliated with an account';
-    }
-
-    if(this.errorMessage !== ''){
-      this.displayErrorMessage = true;
-      setTimeout(() => {
-        this.displayErrorMessage = false;
-        this.errorMessage = '';
-      }, 5000);
-      return;
-    }
-
-    this.authenticationService.signUp(signUpData).subscribe(
-      (response) => {
-        localStorage.setItem('tempEmail', this.email);
-        this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
-      },
-      (error) => {
-        console.error('Erreur lors de l\'inscription :', error);
-        this.errorMessage = error.message;
-      }
-    );
-
-    if(this.errorMessage !== ''){
-      this.displayErrorMessage = true;
-      setTimeout(() => {
-        this.displayErrorMessage = false;
-        this.errorMessage = '';
-      }, 5000);
-      return;
-    }
-
   }
+
 }
