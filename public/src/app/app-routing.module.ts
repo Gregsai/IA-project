@@ -8,6 +8,7 @@ import { PasswordForgottenComponent } from './authentication-components/password
 import { HomeComponent } from './home/home.component';
 import { SendVerificationEmailComponent } from './authentication-components/send-verification-email/send-verification-email.component';
 import { ResetPasswordComponent } from './authentication-components/reset-password/reset-password.component';
+import { MyTournamentsComponent } from './my-tournaments/my-tournaments.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -17,7 +18,7 @@ const routes: Routes = [
   {path: 'reset-password/:token', component: ResetPasswordComponent},
   {path: 'verify-account/:email/:send-email', component: SendVerificationEmailComponent },
   {path: 'verify-account/:token', component: VerifyAccountComponent },
-  {path: 'tournaments', component: AuthComponent}
+  {path: 'my-tournaments', component: MyTournamentsComponent}, //
 ];
 
 @NgModule({

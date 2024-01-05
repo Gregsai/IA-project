@@ -5,17 +5,21 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-
 export class AuthenticationService {
   private baseURL = 'http://localhost:3000';
   private tokenKey = 'auth_token';
   private expirationKey = 'auth_token_expiration';
+  private redirectUrl: string = '/';
 
-  constructor(
-    private http: HttpClient,
-    ) {
+  constructor(private http: HttpClient) {}
 
-    }
+  setRedirectUrl(url: string): void {
+    this.redirectUrl = url;
+  }
+
+  getRedirectUrl(): string {
+    return this.redirectUrl;
+  }
 
   storeToken(token: string, expirationDate: Date): void {
     localStorage.setItem(this.tokenKey, token);
@@ -49,20 +53,20 @@ export class AuthenticationService {
 
     return new Date() < expiration;
   }
-  validateEmailFormat(email: string): boolean{
+  validateEmailFormat(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
-  validatePasswordFormat(password: string): boolean{
+  validatePasswordFormat(password: string): boolean {
     return password.length >= 4;
   }
 
-  validateLastNameFormat(lastName: string): boolean{
+  validateLastNameFormat(lastName: string): boolean {
     return lastName.length >= 1;
   }
 
-  validateFirstNameFormat(firstName: string): boolean{
+  validateFirstNameFormat(firstName: string): boolean {
     return firstName.length >= 1;
   }
 
@@ -72,7 +76,7 @@ export class AuthenticationService {
     return this.http.get<boolean>(emailAlreadyExistsUrl, { params });
   }
 
-  emailVerified(email: string): Observable<boolean>{
+  emailVerified(email: string): Observable<boolean> {
     const emailVerifiedUrl = `${this.baseURL}/authentication/email-verified`;
     const params = new HttpParams().set('email', email);
     return this.http.get<boolean>(emailVerifiedUrl, { params });

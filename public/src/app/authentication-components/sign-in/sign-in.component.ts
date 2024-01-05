@@ -89,7 +89,9 @@ export class SignInComponent {
         if (response && response.token && response.expirationDate) {
           const expirationDate = new Date(response.expirationDate);
           this.authenticationService.storeToken(response.token, expirationDate);
-          this.router.navigateByUrl('/', { replaceUrl: true }).then(() => {
+
+          const redirectUrl = this.authenticationService.getRedirectUrl(); // Récupérer l'URL de redirection
+          this.router.navigateByUrl(redirectUrl, { replaceUrl: true }).then(() => {
             window.location.reload();
           });
         }
