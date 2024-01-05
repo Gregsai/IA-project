@@ -144,7 +144,7 @@ async function signIn(email, password) {
     const passwordMatch = await comparePasswords(password, user.password);
 
     if (!passwordMatch) {
-      throw new Error("Incorrect password");
+      return { error: "Password does not match the account" };
     }
 
     const { token, expirationDate } = await generateSignedInToken(user.email);
@@ -272,6 +272,30 @@ async function sendResetPasswordEmail(email) {
     throw new Error("Error sending Reset Password email.");
   }
 }
+
+async function resetPassword(token, password) {
+  try {
+    const decodedToken = jwt.verify(token, "secret");
+    const email = decodedToken.email;
+
+    const user = await getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const queryText = "UPDATE users SET password = $1 WHERE email = $2";
+    const values = [hashedPassword, email];
+    await pool.query(queryText, values);
+
+    return { message: "Password reset successful" };
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    throw new Error("Error resetting password");
+  }
+}
+
+
 module.exports = {
   signUp,
   signIn,
@@ -285,4 +309,5 @@ module.exports = {
   getUserIdByEmail,
   getUserRoleById,
   sendResetPasswordEmail,
+  resetPassword,
 };

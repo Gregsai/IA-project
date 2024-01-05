@@ -7,7 +7,7 @@ import { AuthenticationService } from '../authentication.service';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   token: string = '';
   showMessage: boolean = false;
   message: string = '';
@@ -26,61 +26,60 @@ export class ResetPasswordComponent {
     this.route.params.subscribe(params => {
       this.token = params['token'];
     });
-    history.replaceState({}, '', '/');
+    if (typeof window !== 'undefined') {
+      history.replaceState({}, '', '/reset-password');
+    } else {
+    }
   }
 
   resetPassword(): void {
-    const PasswordData = {
-      password: this.password,
-      confirmPassword: this.confirmPassword
-    }
     if (this.password !== this.confirmPassword) {
-      this.resetParameters();
-      this.showErrorMessage = true;
-      this.errorMessage = 'Passwords do not match';
-      setTimeout(() => {
-        this.showErrorMessage = false;
-        this.errorMessage = '';
-      }, 5000);
+      this.handleErrorMessage('Passwords do not match');
+      return;
+    } else if (!this.authenticationService.validatePasswordFormat(this.password)) {
+      this.handleErrorMessage('Password must be at least 4 characters long');
       return;
     }
-    else if (!this.authenticationService.validatePasswordFormat(this.password)){
-      this.resetParameters();
-      this.showErrorMessage = true;
-      this.errorMessage = 'Password must be at least 4 characters long';
-      setTimeout(() => {
-        this.showErrorMessage = false;
-        this.errorMessage = '';
-      }, 5000);
-      return;
-    }
+
     this.authenticationService.resetPassword(this.token, this.password)
       .subscribe(
-        (response : any) => {
-          console.log('Password reset:', response);
-          this.message = response.message;
-          this.showMessage = true;
-          setTimeout(() => {
-            this.showMessage = false;
-            this.message = '';
-            this.resetParameters();
-            this.navigateToHome();
-          }, 5000);
+        (response: any) => {
+          this.handleSuccessMessage(response.message);
+          this.navigateToHome();
         },
         (error) => {
-          this.resetParameters();
-          console.error('Error resetting password:', error);
-          this.message = error.message;
-          this.showMessage = true;
-          setTimeout(() => {
-            this.showMessage = false;
-            this.message = '';
-          }, 5000);
+          this.handleErrorMessage(error.message);
         }
       );
   }
 
-  resetParameters():void {
+  handleSuccessMessage(message: string): void {
+    this.message = message;
+    this.showMessage = true;
+    setTimeout(() => {
+      this.hideMessage();
+      this.resetParameters();
+      this.navigateToHome();
+    }, 5000);
+  }
+
+  handleErrorMessage(message: string): void {
+    this.errorMessage = message;
+    this.showErrorMessage = true;
+    setTimeout(() => {
+      this.hideMessage();
+      this.resetParameters();
+    }, 5000);
+  }
+
+  hideMessage(): void {
+    this.showMessage = false;
+    this.showErrorMessage = false;
+    this.message = '';
+    this.errorMessage = '';
+  }
+
+  resetParameters(): void {
     this.password = '';
     this.confirmPassword = '';
   }
@@ -88,4 +87,10 @@ export class ResetPasswordComponent {
   navigateToHome(): void {
     this.router.navigateByUrl('', { replaceUrl: true });
   }
+
+  redirectToHome(event: Event): void {
+    event.preventDefault();
+    this.router.navigateByUrl('/', { replaceUrl: true });
+  }
 }
+

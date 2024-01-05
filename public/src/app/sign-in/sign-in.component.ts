@@ -5,9 +5,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css']
+  styleUrls: ['./sign-in.component.css'],
 })
-
 export class SignInComponent {
   email: string = '';
   password: string = '';
@@ -17,9 +16,8 @@ export class SignInComponent {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private router: Router,
-  ){}
-
+    private router: Router
+  ) {}
 
   signIn() {
     this.disableButton = true;
@@ -29,36 +27,46 @@ export class SignInComponent {
 
     const signInData = {
       email: this.email,
-      password: this.password
+      password: this.password,
     };
 
     if (!this.authenticationService.validateEmailFormat(this.email)) {
-      this.errorMessage = 'Please enter a valid email (eg.. john.doe@gmail.com)';
-    } else if (!this.authenticationService.validatePasswordFormat(this.password)) {
-      this.errorMessage = 'Please enter a valid password (at least 4 characters)';
+      this.errorMessage =
+        'Please enter a valid email (eg.. john.doe@gmail.com)';
+    } else if (
+      !this.authenticationService.validatePasswordFormat(this.password)
+    ) {
+      this.errorMessage =
+        'Please enter a valid password (at least 4 characters)';
     } else {
       this.authenticationService.emailAlreadyExists(this.email).subscribe(
-        (response:any) => {
+        (response: any) => {
           if (!response.exists) {
             this.errorMessage = 'This email is not affiliated with any account';
           } else {
             this.authenticationService.emailVerified(this.email).subscribe(
-              (response:any) => {
+              (response: any) => {
                 if (!response.verified) {
-                  this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
+                  this.router.navigateByUrl(
+                    `/verify-account/${this.email}/send-email`,
+                    { replaceUrl: true }
+                  );
                   return;
                 } else {
                   this.attemptSignIn(signInData);
                 }
               },
-              error => {
-                console.error('Error while checking email verification:', error);
+              (error) => {
+                console.error(
+                  'Error while checking email verification:',
+                  error
+                );
                 this.errorMessage = 'Error while checking email verification.';
               }
             );
           }
         },
-        error => {
+        (error) => {
           console.error('Error while checking email existence:', error);
           this.errorMessage = 'Error while checking email existence.';
         }
@@ -71,7 +79,7 @@ export class SignInComponent {
         this.displayErrorMessage = false;
         this.errorMessage = '';
       }, 5000);
-      return
+      return;
     }
   }
 
@@ -88,7 +96,7 @@ export class SignInComponent {
       },
       (error) => {
         console.error('Error during sign in:', error);
-        this.errorMessage = error.message;
+        this.errorMessage = 'Password is incorrect';
         this.displayErrorMessage = true;
         setTimeout(() => {
           this.displayErrorMessage = false;
@@ -98,12 +106,11 @@ export class SignInComponent {
     );
   }
 
-
-  redirectToPasswordForgotten(event: Event){
+  redirectToPasswordForgotten(event: Event) {
     event.preventDefault();
     this.router.navigateByUrl('/password-forgotten', { replaceUrl: true });
   }
-  redirectToSignUp(event: Event){
+  redirectToSignUp(event: Event) {
     event.preventDefault();
     this.router.navigateByUrl('/sign-up', { replaceUrl: true });
   }

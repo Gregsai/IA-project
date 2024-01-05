@@ -49,7 +49,6 @@ export class SignUpComponent {
           } else {
             this.authenticationService.signUp(signUpData).subscribe(
               (signUpResponse) => {
-                localStorage.setItem('tempEmail', this.email);
                 this.router.navigateByUrl(`/verify-account/${this.email}/send-email`, { replaceUrl: true });
               },
               (signUpError) => {

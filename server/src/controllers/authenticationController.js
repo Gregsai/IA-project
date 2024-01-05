@@ -13,13 +13,21 @@ async function signUp(req, res) {
 async function signIn(req, res) {
   try {
     const { email, password } = req.body;
-    const { token, expirationDate } = await authService.signIn(email, password);
-    res.status(200).json({ token, expirationDate }); 
+    const signInResult = await authService.signIn(email, password);
+
+    if (signInResult.error) {
+      res.status(401).json({ error: signInResult.error });
+      return;
+    }
+
+    const { token, expirationDate } = signInResult;
+    res.status(200).json({ token, expirationDate });
   } catch (error) {
     console.error('Error during sign in:', error);
     res.status(500).json({ error: 'Error during sign in' });
   }
 }
+
 
 
 async function emailAlreadyExists(req, res) {
@@ -84,7 +92,15 @@ async function sendResetPasswordEmail(req, res) {
 }
 
 async function resetPassword(req, res) {
-
+  try {
+    const { token, password } = req.body;
+    console.log('reset password', token, password);
+    const response = await authService.resetPassword(token, password);
+    res.status(200).send(response);
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Error while updating password');
+  }
 }
 
 module.exports = {
