@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.post('/sign-up', authenticationController.signUp);
 router.post('/sign-in', authenticationController.signIn);
-router.get('/sign-out', authenticationController.signOut);
 
 router.get('/email-already-exists', authenticationController.emailAlreadyExists);
 router.get('/email-verified', authenticationController.emailVerified);

@@ -21,9 +21,6 @@ async function signIn(req, res) {
   }
 }
 
-async function signOut(req, res) {
-
-}
 
 async function emailAlreadyExists(req, res) {
   try {
@@ -77,7 +74,13 @@ async function verifyAccount(req, res) {
 }
 
 async function sendResetPasswordEmail(req, res) {
-
+  try {
+    const { email } = req.body;
+    const response = await authService.sendResetPasswordEmail(email);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 async function resetPassword(req, res) {
@@ -87,7 +90,6 @@ async function resetPassword(req, res) {
 module.exports = {
   signUp,
   signIn,
-  signOut,
   emailAlreadyExists,
   emailVerified,
   sendVerificationEmail,

@@ -237,6 +237,41 @@ async function generateSignedInToken(email) {
   }
 }
 
+async function sendResetPasswordEmail(email) {
+  try {
+    const confirmationToken = jwt.sign({ email }, "secret", {
+      expiresIn: "24h",
+    });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "internetapplication7@gmail.com",
+        pass: "simz hxia qtur oayu",
+      },
+    });
+
+    const mailOptions = {
+      from: "internetapplication7@gmail.com",
+      to: email,
+      subject: "IA Project Reset password",
+      html: `
+      <p>
+        Click the button below to reset your password:
+      </p>
+      <a href="http://localhost:4200/reset-password/${confirmationToken}" style="text-decoration: none;">
+        <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Reset Password
+        </button>
+      </a>
+    `,
+    };
+    await transporter.sendMail(mailOptions);
+    return { message: "Reset Password email sent. Please check your inbox" };
+  } catch (error) {
+    console.error("Error sending Reset Password email :", error);
+    throw new Error("Error sending Reset Password email.");
+  }
+}
 module.exports = {
   signUp,
   signIn,
@@ -249,4 +284,5 @@ module.exports = {
   generateSignedInToken,
   getUserIdByEmail,
   getUserRoleById,
+  sendResetPasswordEmail,
 };
