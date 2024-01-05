@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VerifyAccountComponent } from './verify-account/verify-account.component';
-import { AuthComponent } from './auth/auth.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
-import { SignInComponent } from './sign-in/sign-in.component';
-import { PasswordForgottenComponent } from './password-forgotten/password-forgotten.component';
+import { VerifyAccountComponent } from './authentication-components/verify-account/verify-account.component';
+import { AuthComponent } from './authentication-components/auth/auth.component';
+import { SignUpComponent } from './authentication-components/sign-up/sign-up.component';
+import { SignInComponent } from './authentication-components/sign-in/sign-in.component';
+import { PasswordForgottenComponent } from './authentication-components/password-forgotten/password-forgotten.component';
 import { HomeComponent } from './home/home.component';
-import { SendVerificationEmailComponent } from './send-verification-email/send-verification-email.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SendVerificationEmailComponent } from './authentication-components/send-verification-email/send-verification-email.component';
+import { ResetPasswordComponent } from './authentication-components/reset-password/reset-password.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},

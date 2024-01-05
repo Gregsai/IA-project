@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'app-verify-account',
@@ -40,7 +40,7 @@ export class VerifyAccountComponent {
         },
         (error) => {
           console.error('Error verifying account:', error);
-          this.message = error.message;
+          this.message = "Error verifying account. Please send again the account verification email.";
           this.showMessage = true;
           setTimeout(() => {
             this.showMessage = false;

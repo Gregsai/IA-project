@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'app-send-verification-email',
@@ -23,6 +23,7 @@ export class SendVerificationEmailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.email = params['email'];
     });
+    history.replaceState({}, '', '/send-email');
   }
 
 
