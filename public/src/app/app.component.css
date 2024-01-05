@@ -2,13 +2,7 @@
 *{
     font-family: 'Be Vietnam Pro', sans-serif;
 }
-body{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-}
+
 header{
     display: flex;
     justify-content: space-between;
@@ -58,14 +52,29 @@ header{
   #header-right-part a:hover {
     text-decoration: underline;
   }
-main{
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
     flex: 1;
 }
+
 footer {
-    text-align: center;
+    position: absolute;
+    width: 100%;
+    background-color: #5306C6;
     color: white;
-    background-color: #5306C6 ;
+    text-align: center;
     font-weight: bold;
-    padding-top: 10px;
-    padding-bottom: 0px;
+    padding: 10px 0;
+    bottom: 0;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
 }

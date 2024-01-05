@@ -13,6 +13,7 @@ export class SignInComponent {
   password: string = '';
   errorMessage: string = '';
   displayErrorMessage: boolean = true;
+  disableButton: boolean = false;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -21,6 +22,11 @@ export class SignInComponent {
 
 
   signIn() {
+    this.disableButton = true;
+    setTimeout(() => {
+      this.disableButton = false;
+    }, 5000);
+
     const signInData = {
       email: this.email,
       password: this.password
