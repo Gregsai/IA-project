@@ -40,7 +40,6 @@ export class AuthComponent {
         }
       },
       (error) => {
-        console.error('Error checking login status:', error);
         this.userLoggedIn = 'disconnected';
       }
     );

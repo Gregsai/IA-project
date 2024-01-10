@@ -8,7 +8,7 @@ async function signUp(req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+} 
 
 
 async function emailAlreadyExists(req, res) {
@@ -108,10 +108,11 @@ async function signIn(req, res) {
 }
 
 async function isLoggedIn(req, res) {
+  console.log('isLoggedIn')
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(200).json({ authenticated: null });
     }
 
     const renewedToken = authService.checkAndRenewToken(token);

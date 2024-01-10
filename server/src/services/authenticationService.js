@@ -295,7 +295,6 @@ async function resetPassword(token, password) {
   }
 }
 
-// Modifie la fonction checkAndRenewToken pour renvoyer le token actuel, un nouveau token ou null en fonction de la validité du token
 function checkAndRenewToken(token) {
   try {
     const decoded = jwt.verify(token, "secret");
@@ -323,29 +322,6 @@ function generateToken(email) {
   return token;
 }
 
-async function logIn(email, password) {
-  try {
-    const user = await getUserByEmail(email);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const passwordMatch = await comparePasswords(password, user.password);
-
-    if (!passwordMatch) {
-      return { error: "Password does not match the account" };
-    }
-
-    const { token } = generateToken(user.email);
-
-    return { token };
-  } catch (error) {
-    console.error("Error during sign in:", error);
-    throw new Error("Error during sign in");
-  }
-}
-
 
 module.exports = {
   signUp,
@@ -363,5 +339,4 @@ module.exports = {
   resetPassword,
   checkAndRenewToken,
   generateToken,
-  logIn,
 };

@@ -10,6 +10,7 @@ import { SendVerificationEmailComponent } from './authentication-components/send
 import { ResetPasswordComponent } from './authentication-components/reset-password/reset-password.component';
 import { MyTournamentsComponent } from './my-tournaments/my-tournaments.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
+import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: 'verify-account/:email/:send-email', component: SendVerificationEmailComponent },
   {path: 'verify-account/:token', component: VerifyAccountComponent },
   {path: 'my-tournaments', component: MyTournamentsComponent},
-  {path: 'tournaments', component: TournamentsComponent}, //
+  {path: 'tournaments', component: TournamentsComponent},
+  {path: 'create-tournament', component: CreateTournamentComponent}
 
 ];
 
