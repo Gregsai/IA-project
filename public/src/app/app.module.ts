@@ -15,6 +15,8 @@ import { HomeComponent } from './home/home.component';
 import { SendVerificationEmailComponent } from './authentication-components/send-verification-email/send-verification-email.component';
 import { ResetPasswordComponent } from './authentication-components/reset-password/reset-password.component';
 import { MyTournamentsComponent } from './my-tournaments/my-tournaments.component';
+import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
+import { TournamentsComponent } from './tournaments/tournaments.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { MyTournamentsComponent } from './my-tournaments/my-tournaments.componen
     HomeComponent,
     SendVerificationEmailComponent,
     ResetPasswordComponent,
-    MyTournamentsComponent
+    MyTournamentsComponent,
+    CreateTournamentComponent,
+    TournamentsComponent
   ],
   imports: [
     BrowserModule,
