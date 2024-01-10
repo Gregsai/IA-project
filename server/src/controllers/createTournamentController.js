@@ -1,10 +1,10 @@
 const createTournamentService = require("../services/createTournamentService");
-const jwt = require("jsonwebtoken");
+const authenticationService = require("../services/authenticationService");
 
 async function createTournament(req, res) {
+    console.log("createTournament")
     const token = req.cookies.token;
-    let userId; // Déclarer une variable pour stocker l'ID
-
+    const userId = await authenticationService.getUserIdInToken(token);
     console.log('token', token)
     jwt.verify(token, "secret", (err, decoded) => {
         if (err) {

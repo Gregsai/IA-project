@@ -214,7 +214,7 @@ async function resetPassword(token, password) {
     await pool.query(queryText, values);
     console.log("Password changed successfully")
 
-    return { message: "Password reset successful" };
+    return { message: "Password reset successfull" };
   } catch (error) {
     console.error("Error resetting password:", error);
     throw new Error("Error resetting password");

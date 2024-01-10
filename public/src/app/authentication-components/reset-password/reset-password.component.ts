@@ -44,8 +44,8 @@ export class ResetPasswordComponent implements OnInit {
     this.authenticationService.resetPassword(this.token, this.password)
       .subscribe(
         (response: any) => {
+          console.log("response", response.message);
           this.handleSuccessMessage(response.message);
-          this.navigateToHome();
         },
         (error) => {
           this.handleErrorMessage(error.message);
@@ -85,7 +85,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   navigateToHome(): void {
-    this.router.navigateByUrl('', { replaceUrl: true });
+    this.router.navigateByUrl('/', { replaceUrl: true });
   }
 
   redirectToHome(event: Event): void {
