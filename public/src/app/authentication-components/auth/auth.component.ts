@@ -23,6 +23,7 @@ export class AuthComponent {
       this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
+        console.log('User logged in');
         this.checkLoginStatus();
       });
     } else {

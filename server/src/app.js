@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const authenticationRoutes = require("./routes/authenticationRoutes");
+const createTournamentRoutes = require("./routes/createTournamentRoutes");
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(
 app.use(express.json());
 
 app.use('/authentication', authenticationRoutes);
+app.use('/create-tournament', createTournamentRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

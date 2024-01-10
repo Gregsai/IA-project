@@ -1,1 +1,62 @@
-<p>create-tournament works!</p>
+<div class="tournament-form">
+  <h3>Create Tournament</h3>
+  <div class="form-content">
+    <form #tournamentForm="ngForm">
+      <div class="form-group">
+        <label for="tournamentName">Tournament Name</label>
+        <input type="text" class="form-control" id="tournamentName" name="tournamentName" [(ngModel)]="tournamentName">
+      </div>
+      <div class="form-group">
+        <label for="discipline">Discipline</label>
+        <input type="text" class="form-control" id="discipline" name="discipline" [(ngModel)]="discipline">
+      </div>
+      <div class="form-group">
+        <label for="seedingType">Seeding Type</label>
+        <select class="form-control" id="seedingType" name="seedingType" [(ngModel)]="seedingType">
+          <option value="Random">Random</option>
+          <option value="By Rank">By Rank</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="dateTime">Date and Time</label>
+        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" [(ngModel)]="dateTime">
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" class="form-control" id="address" name="address" [(ngModel)]="address">
+      </div>
+      <div class="form-group">
+        <label for="participantLimit">Participant Limit (Leave blank for no limit)</label>
+        <input type="number" class="form-control" id="participantLimit" name="participantLimit" [(ngModel)]="participantLimit" min="1">
+      </div>
+      <div class="form-group">
+        <label for="registrationDeadline">Registration Deadline</label>
+        <input type="datetime-local" class="form-control" id="registrationDeadline" name="registrationDeadline" [(ngModel)]="registrationDeadline">
+      </div>
+      <div class="form-group">
+        <div *ngFor="let sponsor of sponsors; let i = index" class="sponsor-item">
+          <div class="form-group">
+            <label for="sponsorName{{i}}">Name</label>
+            <input type="text" class="form-control" id="sponsorName{{i}}" name="sponsorName{{i}}" [(ngModel)]="sponsors[i].name">
+          </div>
+          <div class="form-group">
+            <label for="sponsorLink{{i}}">Link</label>
+            <input type="text" class="form-control" id="sponsorLink{{i}}" name="sponsorLink{{i}}" [(ngModel)]="sponsors[i].link">
+          </div>
+          <div class="form-group">
+            <label for="sponsorImage{{i}}">Image Link</label>
+            <input type="text" class="form-control" id="sponsorImage{{i}}" name="sponsorImage{{i}}" [(ngModel)]="sponsors[i].imageLink">
+          </div>
+          <button type="button" class="btn btn-danger" (click)="removeSponsor(i)">Remove Sponsor</button>
+        </div>
+        <button type="button" class="btn btn-success" (click)="addSponsor()">Add a Sponsor</button>
+      </div>
+      <p *ngIf="showError" class="error-message">{{ errorMessage }}</p>
+      <div id="buttons">
+        <button type="button" class="btn" (click)="createTournament()" [disabled]="disableButton">
+          Create Tournament
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

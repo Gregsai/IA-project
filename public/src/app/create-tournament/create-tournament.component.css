@@ -1,0 +1,41 @@
+.tournament-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #F6F6F4;
+  border: solid 1px #5306C6;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 50%;
+  overflow: auto;
+}
+
+.form-content {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+
+#buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#buttons > .btn {
+  background-color: #EBF82C;
+  color: black;
+  width: 20%;
+}
+
+#buttons > .btn:hover {
+  background-color: #5306C6;
+  color: white;
+}

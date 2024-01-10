@@ -6,9 +6,11 @@ const pool = require("../../config/database");
 
 async function signUp(firstName, lastName, email, password) {
   try {
-    console.log("signUpUser", firstName, lastName, email, password);
-    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("signing up in the authentication service", firstName, lastName, email, password)
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("hashed password: ", hashedPassword)
+    
     const newUser = new User(
       firstName,
       lastName,
@@ -29,10 +31,11 @@ async function signUp(firstName, lastName, email, password) {
       newUser.role,
     ];
 
+    console.log("sending query to the database ...")
     const result = await pool.query(queryText, values);
     const insertedEmail = result.rows[0].email;
-
-    return insertedEmail;
+    console.log("user : " + insertedEmail + " successfully inserted into the database");
+    return { message: "User registered successfully" };
   } catch (error) {
     console.error("Error during registration :", error);
     throw new Error("Error during registration.");
@@ -44,6 +47,7 @@ async function emailAlreadyExists(email) {
     const queryText = "SELECT * FROM users WHERE email = $1";
     const values = [email];
 
+    console.log("sending query to the database ...")
     const result = await pool.query(queryText, values);
     const user = result.rows[0];
 
@@ -58,11 +62,33 @@ async function emailAlreadyExists(email) {
   }
 }
 
+async function emailVerified(email) {
+  try {
+    const queryText = "SELECT * FROM users WHERE email = $1 ";
+    const values = [email];
+
+    console.log("sending query to the database ...")
+    const result = await pool.query(queryText, values);
+    const user = result.rows[0];
+
+    if (user.confirmed) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error during email verification :", error);
+    throw new Error("Error during email verification.");
+  }
+}
+
 async function sendConfirmationEmail(email) {
   try {
+    console.log("Generating confirmation token for email: ", email)
     const confirmationToken = jwt.sign({ email }, "secret", {
       expiresIn: "24h",
     });
+    console.log("Confirmation token generated : ", confirmationToken)
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -86,7 +112,9 @@ async function sendConfirmationEmail(email) {
       </a>
     `,
     };
+    console.log("Sending confirmation email ...")
     await transporter.sendMail(mailOptions);
+    console.log("Confirmation email sent successfully")
     return { message: "Confirmation email sent. Please check your inbox" };
   } catch (error) {
     console.error("Error sending confirmation email :", error);
@@ -96,12 +124,16 @@ async function sendConfirmationEmail(email) {
 
 async function verifyAccount(token) {
   try {
+    console.log("Verifying token ...", token);
     const decoded = jwt.verify(token, "secret");
+    console.log("Token verified :");
+
     const email = decoded.email;
 
     const confirmUserQuery = "UPDATE users SET confirmed = $1 WHERE email = $2";
     const values = [true, email];
 
+    console.log("Sending query to confirm user")
     await pool.query(confirmUserQuery, values);
 
     return {
@@ -114,50 +146,84 @@ async function verifyAccount(token) {
   }
 }
 
-async function emailVerified(email) {
+async function sendResetPasswordEmail(email) {
   try {
-    const queryText = "SELECT * FROM users WHERE email = $1 ";
-    const values = [email];
+    console.log("Generating resetPassword token for email: ", email)
+    const resetPasswordToken = jwt.sign({ email }, "secret", {
+      expiresIn: "24h",
+    });
+    console.log("Reset password token generated : ", resetPasswordToken)
 
-    const result = await pool.query(queryText, values);
-    const user = result.rows[0];
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "internetapplication7@gmail.com",
+        pass: "simz hxia qtur oayu",
+      },
+    });
 
-    if (user.confirmed) {
-      return true;
-    } else {
-      return false;
-    }
+    const mailOptions = {
+      from: "internetapplication7@gmail.com",
+      to: email,
+      subject: "IA Project Reset password",
+      html: `
+      <p>
+        Click the button below to reset your password:
+      </p>
+      <a href="http://localhost:4200/reset-password/${resetPasswordToken}" style="text-decoration: none;">
+        <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Reset Password
+        </button>
+      </a>
+    `,
+    };
+    console.log("Sending reset Password email ...")
+    await transporter.sendMail(mailOptions);
+    console.log("reset Password email sent successfully")    
+    
+    return { message: "Reset Password email sent. Please check your inbox" };
   } catch (error) {
-    console.error("Error during email verification :", error);
-    throw new Error("Error during email verification.");
+    console.error("Error sending Reset Password email :", error);
+    throw new Error("Error sending Reset Password email.");
   }
 }
 
-async function signIn(email, password) {
+async function resetPassword(token, password) {
   try {
-    const user = await getUserByEmail(email);
+    console.log("Verifying token ...", token);
+    const decodedToken = jwt.verify(token, "secret");
+    console.log("Token verified");
 
+    const email = decodedToken.email;
+
+    console.log("Verifying that the user still exists...");
+    const user = await getUserByEmail(email);
     if (!user) {
       throw new Error("User not found");
     }
+    console.log("The user still exists");
 
-    const passwordMatch = await comparePasswords(password, user.password);
+    console.log("Hashing the new password : ",password);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("New password hashed : ",hashedPassword);
 
-    if (!passwordMatch) {
-      return { error: "Password does not match the account" };
-    }
+    const queryText = "UPDATE users SET password = $1 WHERE email = $2";
+    const values = [hashedPassword, email];
 
-    const { token, expirationDate } = await generateSignedInToken(user.email);
+    console.log("Sending query to change the password in the database : ")
+    await pool.query(queryText, values);
+    console.log("Password changed successfully")
 
-    return { token, expirationDate };
+    return { message: "Password reset successful" };
   } catch (error) {
-    console.error("Error during sign in:", error);
-    throw new Error("Error during sign in");
+    console.error("Error resetting password:", error);
+    throw new Error("Error resetting password");
   }
 }
 
 async function getUserByEmail(email) {
   try {
+    console.log("Getting user by email");
     const queryText = "SELECT * FROM users WHERE email = $1";
     const values = [email];
 
@@ -175,43 +241,6 @@ async function getUserByEmail(email) {
   }
 }
 
-async function getUserIdByEmail(email) {
-  try {
-    const queryText = "SELECT id FROM users WHERE email = $1";
-    const values = [email];
-
-    const result = await pool.query(queryText, values);
-    const id = result.rows[0]['id'];
-
-    if (!id) {
-      throw new Error("User not found");
-    }
-    return id;
-  } catch (error) {
-    console.error("Error fetching user id by email:", error);
-    throw new Error("Error fetching user id by email");
-  }
-}
-
-async function getUserRoleById(id) {
-  try {
-    const queryText = "SELECT role FROM users WHERE id = $1";
-    const values = [id];
-
-    const result = await pool.query(queryText, values);
-    const role = result.rows[0];
-
-    if (!role) {
-      throw new Error("User not found");
-    }
-
-    return role;
-  } catch (error) {
-    console.error("Error fetching user role by id:", error);
-    throw new Error("Error fetching user role by id");
-  }
-}
-
 async function comparePasswords(password, hashedPassword) {
   try {
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
@@ -222,88 +251,56 @@ async function comparePasswords(password, hashedPassword) {
   }
 }
 
-async function generateSignedInToken(email) {
+function generateSignedInToken(user) {
   try {
-    const id = await getUserIdByEmail(email);
-    const role = await getUserRoleById(id);
-    const token = jwt.sign({ id, role }, "secret", { expiresIn: "20s" });
-    const decodedToken = jwt.decode(token);
-    const expirationDate = new Date(decodedToken.exp * 1000); // Convertir en millisecondes
+    const email = user.email;
+    const id = user.id;
+    const role = user.role;
+    const token = jwt.sign({ id, email, role }, "secret", { expiresIn: "1h" });
 
-    return { token, expirationDate };
+    return token ;
   } catch (error) {
     console.error("Error generating token:", error);
     throw new Error("Error generating token");
   }
 }
 
-async function sendResetPasswordEmail(email) {
+async function signIn(email, password) {
   try {
-    const confirmationToken = jwt.sign({ email }, "secret", {
-      expiresIn: "24h",
-    });
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "internetapplication7@gmail.com",
-        pass: "simz hxia qtur oayu",
-      },
-    });
-
-    const mailOptions = {
-      from: "internetapplication7@gmail.com",
-      to: email,
-      subject: "IA Project Reset password",
-      html: `
-      <p>
-        Click the button below to reset your password:
-      </p>
-      <a href="http://localhost:4200/reset-password/${confirmationToken}" style="text-decoration: none;">
-        <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-          Reset Password
-        </button>
-      </a>
-    `,
-    };
-    await transporter.sendMail(mailOptions);
-    return { message: "Reset Password email sent. Please check your inbox" };
-  } catch (error) {
-    console.error("Error sending Reset Password email :", error);
-    throw new Error("Error sending Reset Password email.");
-  }
-}
-
-async function resetPassword(token, password) {
-  try {
-    const decodedToken = jwt.verify(token, "secret");
-    const email = decodedToken.email;
-
     const user = await getUserByEmail(email);
+
     if (!user) {
       throw new Error("User not found");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const queryText = "UPDATE users SET password = $1 WHERE email = $2";
-    const values = [hashedPassword, email];
-    await pool.query(queryText, values);
+    const passwordMatch = await comparePasswords(password, user.password);
 
-    return { message: "Password reset successful" };
+    if (!passwordMatch) {
+      return { error: "Password does not match the account" };
+    }
+
+    const token = generateSignedInToken(user);
+
+    return { token };
   } catch (error) {
-    console.error("Error resetting password:", error);
-    throw new Error("Error resetting password");
+    console.error("Error during sign in:", error);
+    throw new Error("Error during sign in");
   }
 }
 
-function checkAndRenewToken(token) {
+
+
+async function checkAndRenewToken(token) {
   try {
     const decoded = jwt.verify(token, "secret");
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const expirationTime = decoded.exp;
     const timeDifference = expirationTime - currentTimestamp;
+    console.log("timeDifference: ", timeDifference);
     if (timeDifference > 0) {
       if (timeDifference < 300) { 
-        const newToken = generateToken(decoded.email);
+        const user = await getUserByEmail(decoded.email);
+        const newToken = generateSignedInToken(user);
         return newToken;
       } else {
         return token;
@@ -316,11 +313,17 @@ function checkAndRenewToken(token) {
   }
 }
 
-
-function generateToken(email) {
-  const token = jwt.sign({ email }, "secret", { expiresIn: '1h' });
-  return token;
+async function getUserIdInToken(token) {
+  try {
+    const decoded = jwt.verify(token, "secret");
+    const id = decoded.id;
+    return id;
+  } catch (error) {
+    console.error("Error getting user id in token:", error);
+    throw new Error("Error getting user id in token");
+  }
 }
+
 
 
 module.exports = {
@@ -333,10 +336,8 @@ module.exports = {
   getUserByEmail,
   comparePasswords,
   generateSignedInToken,
-  getUserIdByEmail,
-  getUserRoleById,
   sendResetPasswordEmail,
   resetPassword,
   checkAndRenewToken,
-  generateToken,
+  getUserIdInToken,
 };
