@@ -226,7 +226,7 @@ async function generateSignedInToken(email) {
   try {
     const id = await getUserIdByEmail(email);
     const role = await getUserRoleById(id);
-    const token = jwt.sign({ id, role }, "secret", { expiresIn: "1h" });
+    const token = jwt.sign({ id, role }, "secret", { expiresIn: "20s" });
     const decodedToken = jwt.decode(token);
     const expirationDate = new Date(decodedToken.exp * 1000); // Convertir en millisecondes
 
@@ -295,6 +295,53 @@ async function resetPassword(token, password) {
   }
 }
 
+function checkAndRenewToken(token) {
+  try {
+    const decoded = jwt.verify(token, "secret");
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const expirationTime = decoded.exp;
+    const timeDifference = expirationTime - currentTimestamp;
+
+    if (timeDifference < 300 && timeDifference > 0) { 
+      
+      const newToken = generateToken(decoded.email);
+      return { renewed: true, newToken };
+    }
+
+    return { renewed: false, newToken: null };
+  } catch (error) {
+    return { renewed: false, newToken: null, error: 'Invalid token' }; 
+  }
+}
+
+function generateToken(email) {
+  const token = jwt.sign({ email }, secretKey, { expiresIn: '15m' });
+  return token;
+}
+
+async function logIn(email, password) {
+  try {
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const passwordMatch = await comparePasswords(password, user.password);
+
+    if (!passwordMatch) {
+      return { error: "Password does not match the account" };
+    }
+
+    const { token } = generateToken(user.email);
+
+    return { token };
+  } catch (error) {
+    console.error("Error during sign in:", error);
+    throw new Error("Error during sign in");
+  }
+}
+
 
 module.exports = {
   signUp,
@@ -310,4 +357,7 @@ module.exports = {
   getUserRoleById,
   sendResetPasswordEmail,
   resetPassword,
+  checkAndRenewToken,
+  generateToken,
+  logIn,
 };

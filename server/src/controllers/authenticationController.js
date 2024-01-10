@@ -103,6 +103,51 @@ async function resetPassword(req, res) {
   }
 }
 
+async function logIn(req, res) {
+  try {
+    const { email, password } = req.body;
+    const signInResult = await authService.signIn(email, password);
+
+    if (signInResult.error) {
+      res.status(401).json({ error: signInResult.error });
+      return;
+    }
+
+    const { token } = signInResult;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+    });
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error('Error during sign in:', error);
+    res.status(500).json({ error: 'Error during sign in' });
+  }
+}
+
+async function isLogin(req, res) {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const renewalResult = authService.checkAndRenewToken(token);
+
+    if (renewalResult.renewed) {
+      res.cookie('token', renewalResult.newToken, {
+        httpOnly: true,
+      });
+    }
+
+    return res.status(200).json({ authenticated: !renewalResult.renewed });
+  } catch (error) {
+    console.error('Error checking login status:', error);
+    return res.status(500).json({ error: 'Error checking login status' });
+  }
+}
 module.exports = {
   signUp,
   signIn,
@@ -111,5 +156,7 @@ module.exports = {
   sendVerificationEmail,
   verifyAccount,
   sendResetPasswordEmail,
-  resetPassword
+  resetPassword,
+  logIn,
+  isLogin
 };
