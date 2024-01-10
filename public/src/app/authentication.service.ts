@@ -7,8 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class AuthenticationService {
   private baseURL = 'http://localhost:3000';
-  private tokenKey = 'auth_token';
-  private expirationKey = 'auth_token_expiration';
   private redirectUrl: string = '/';
 
   constructor(private http: HttpClient) {}
@@ -21,38 +19,6 @@ export class AuthenticationService {
     return this.redirectUrl;
   }
 
-  storeToken(token: string, expirationDate: Date): void {
-    localStorage.setItem(this.tokenKey, token);
-    localStorage.setItem(this.expirationKey, expirationDate.toISOString());
-  }
-
-  logOut() {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.expirationKey);
-  }
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  getTokenExpiration(): Date | null {
-    const expiration = localStorage.getItem(this.expirationKey);
-    return expiration ? new Date(expiration) : null;
-  }
-
-  updateToken(token: string, expirationDate: Date): void {
-    this.storeToken(token, expirationDate);
-  }
-
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    const expiration = this.getTokenExpiration();
-
-    if (!token || !expiration) {
-      return false;
-    }
-
-    return new Date() < expiration;
-  }
   validateEmailFormat(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -87,11 +53,6 @@ export class AuthenticationService {
     return this.http.post(signUpURL, signUpData);
   }
 
-  signIn(signUpData: any) {
-    const signInURL = `${this.baseURL}/authentication/sign-in`;
-    return this.http.post(signInURL, signUpData);
-  }
-
   sendVerificationEmail(email: string) {
     const sendVerificationEmailURL = `${this.baseURL}/authentication/send-verification-email`;
     return this.http.post(sendVerificationEmailURL, { email });
@@ -112,21 +73,18 @@ export class AuthenticationService {
     return this.http.get(verifyAccountURL);
   }
 
-
-
-
-  logIn(signUpData: any) {
-    const signInURL = `${this.baseURL}/authentication/log-in`;
+  signIn(signUpData: any) {
+    const signInURL = `${this.baseURL}/authentication/sign-in`;
     return this.http.post(signInURL, signUpData, { withCredentials: true });
   }
 
-  isLogin() {
-    const signInURL = `${this.baseURL}/authentication/is-logged-in`;
-    return this.http.get(signInURL, { withCredentials: true });
+  isLoggedIn() {
+    const isLoggedInURL = `${this.baseURL}/authentication/is-logged-in`;
+    return this.http.get(isLoggedInURL, { withCredentials: true });
   }
 
-  logOut2(){
-    const signInURL = `${this.baseURL}/authentication/logout`;
-    return this.http.get(signInURL, { withCredentials: true });
+  logOut(){
+    const logOutURL = `${this.baseURL}/authentication/log-out`;
+    return this.http.get(logOutURL, { withCredentials: true });
   }
 }

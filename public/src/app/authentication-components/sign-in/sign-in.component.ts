@@ -53,7 +53,7 @@ export class SignInComponent {
                   );
                   return;
                 } else {
-                  this.attemptlogIn(signInData);
+                  this.attemptSignIn(signInData);
                 }
               },
               (error) => {
@@ -83,32 +83,6 @@ export class SignInComponent {
     }
   }
 
-  attemptSignIn(signInData: any) {
-    this.authenticationService.signIn(signInData).subscribe(
-      (response: any) => {
-        console.log(response.token);
-        if (response && response.token && response.expirationDate) {
-          const expirationDate = new Date(response.expirationDate);
-          this.authenticationService.storeToken(response.token, expirationDate);
-
-          const redirectUrl = this.authenticationService.getRedirectUrl(); // Récupérer l'URL de redirection
-          this.router.navigateByUrl(redirectUrl, { replaceUrl: true }).then(() => {
-            window.location.reload();
-          });
-        }
-      },
-      (error) => {
-        console.error('Error during sign in:', error);
-        this.errorMessage = 'Password is incorrect';
-        this.displayErrorMessage = true;
-        setTimeout(() => {
-          this.displayErrorMessage = false;
-          this.errorMessage = '';
-        }, 5000);
-      }
-    );
-  }
-
   redirectToPasswordForgotten(event: Event) {
     event.preventDefault();
     this.router.navigateByUrl('/password-forgotten', { replaceUrl: true });
@@ -119,8 +93,8 @@ export class SignInComponent {
   }
 
 
-  attemptlogIn(signInData: any) {
-    this.authenticationService.logIn(signInData).subscribe(
+  attemptSignIn(signInData: any) {
+    this.authenticationService.signIn(signInData).subscribe(
       (response: any) => {
         if (response && response.token) {
           console.log(response.token);

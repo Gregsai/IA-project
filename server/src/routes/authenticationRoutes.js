@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post('/sign-up', authenticationController.signUp);
 router.post('/sign-in', authenticationController.signIn);
+router.get('/is-logged-in', authenticationController.isLoggedIn);
+router.get('/log-out', authenticationController.logOut);
 
 router.get('/email-already-exists', authenticationController.emailAlreadyExists);
 router.get('/email-verified', authenticationController.emailVerified);
@@ -15,8 +17,4 @@ router.get('/verify-account/:token', authenticationController.verifyAccount);
 router.post('/send-reset-password-email', authenticationController.sendResetPasswordEmail);
 router.post('/reset-password', authenticationController.resetPassword);
 
-
-router.post('/log-in', authenticationController.logIn);
-router.get('/is-logged-in', authenticationController.isLogin);
-router.get('/logout', authenticationController.logOut);
 module.exports = router;

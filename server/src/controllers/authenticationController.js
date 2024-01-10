@@ -10,25 +10,6 @@ async function signUp(req, res) {
   }
 }
 
-async function signIn(req, res) {
-  try {
-    const { email, password } = req.body;
-    const signInResult = await authService.signIn(email, password);
-
-    if (signInResult.error) {
-      res.status(401).json({ error: signInResult.error });
-      return;
-    }
-
-    const { token, expirationDate } = signInResult;
-    res.status(200).json({ token, expirationDate });
-  } catch (error) {
-    console.error('Error during sign in:', error);
-    res.status(500).json({ error: 'Error during sign in' });
-  }
-}
-
-
 
 async function emailAlreadyExists(req, res) {
   try {
@@ -103,7 +84,7 @@ async function resetPassword(req, res) {
   }
 }
 
-async function logIn(req, res) {
+async function signIn(req, res) {
   try {
     const { email, password } = req.body;
     const signInResult = await authService.signIn(email, password);
@@ -126,7 +107,7 @@ async function logIn(req, res) {
   }
 }
 
-async function isLogin(req, res) {
+async function isLoggedIn(req, res) {
   try {
     const token = req.cookies.token;
     if (!token) {
@@ -166,7 +147,6 @@ module.exports = {
   verifyAccount,
   sendResetPasswordEmail,
   resetPassword,
-  logIn,
-  isLogin,
+  isLoggedIn,
   logOut
 };

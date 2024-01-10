@@ -19,34 +19,19 @@ export class AuthComponent {
   }
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
-      this.checkLoginStatus2();
+      this.checkLoginStatus();
       this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.checkLoginStatus2();
+        this.checkLoginStatus();
       });
     } else {
     }
   }
 
+
   checkLoginStatus() {
-      if (this.authenticationService.isLoggedIn()) {
-        this.userLoggedIn = 'connected';
-      }else{
-        this.userLoggedIn = 'disconnected';
-      }
-    }
-
-  logOut(): void {
-    this.authenticationService.logOut();
-    this.checkLoginStatus();
-    window.location.reload();
-  }
-
-
-
-  checkLoginStatus2() {
-    this.authenticationService.isLogin().subscribe(
+    this.authenticationService.isLoggedIn().subscribe(
       (response: any) => {
         if (response && response.authenticated) {
           this.userLoggedIn = 'connected';
@@ -61,9 +46,9 @@ export class AuthComponent {
     );
   }
 
-  logOut2(): void {
-      this.authenticationService.logOut2().subscribe(()=> {
-        this.checkLoginStatus2();
+  logOut(): void {
+      this.authenticationService.logOut().subscribe(()=> {
+        this.checkLoginStatus();
         window.location.reload();
       })
     }
