@@ -2,44 +2,31 @@ const createTournamentService = require("../services/createTournamentService");
 const authenticationService = require("../services/authenticationService");
 
 async function createTournament(req, res) {
-    console.log("createTournament")
     const token = req.cookies.token;
-    const userId = await authenticationService.getUserIdInToken(token);
-    console.log('token', token)
-    jwt.verify(token, "secret", (err, decoded) => {
-        if (err) {
-          console.error('Erreur de vérification du token :', err.message);
-        } else {
-          const { id, role } = decoded;
-          console.log('ID:', id);
-          console.log('Rôle:', role);
-          userId = id; // Affecter l'ID à la variable accessible dans la portée extérieure
-
-        }
-      });
+    if (!token) {
+      return res.status(500).json({ error: 'Impossible to identify the user' });
+    }
+    const organizer = await authenticationService.getUserIdInToken(token);
     const {
       name,
       discipline,
-      seedingType,
-      dateTime,
+      date,
+      maxParticipants,
+      applicationDeadline,
       address,
-      participantLimit,
-      registrationDeadline,
+      seedingType,
       sponsors
     } = req.body;
-    console.log("contenu" , req.body)
     try {
-        console.log("a" , req.body)
-
       const result = await createTournamentService.createTournament(
-        userId,
+        organizer,
         name,
         discipline,
-        seedingType,
-        dateTime,
+        date,
+        maxParticipants,
+        applicationDeadline,
         address,
-        participantLimit,
-        registrationDeadline,
+        seedingType,
         sponsors
       );
   

@@ -4,7 +4,7 @@
     <form #tournamentForm="ngForm">
       <div class="form-group">
         <label for="tournamentName">Tournament Name</label>
-        <input type="text" class="form-control" id="tournamentName" name="tournamentName" [(ngModel)]="tournamentName">
+        <input type="text" class="form-control" id="tournamentName" name="tournamentName" [(ngModel)]="name">
       </div>
       <div class="form-group">
         <label for="discipline">Discipline</label>
@@ -19,7 +19,7 @@
       </div>
       <div class="form-group">
         <label for="dateTime">Date and Time</label>
-        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" [(ngModel)]="dateTime">
+        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" [(ngModel)]="date">
       </div>
       <div class="form-group">
         <label for="address">Address</label>
@@ -27,11 +27,11 @@
       </div>
       <div class="form-group">
         <label for="participantLimit">Participant Limit (Leave blank for no limit)</label>
-        <input type="number" class="form-control" id="participantLimit" name="participantLimit" [(ngModel)]="participantLimit" min="1">
+        <input type="number" class="form-control" id="participantLimit" name="participantLimit" [(ngModel)]="maxParticipants" min="1">
       </div>
       <div class="form-group">
         <label for="registrationDeadline">Registration Deadline</label>
-        <input type="datetime-local" class="form-control" id="registrationDeadline" name="registrationDeadline" [(ngModel)]="registrationDeadline">
+        <input type="datetime-local" class="form-control" id="registrationDeadline" name="registrationDeadline" [(ngModel)]="applicationDeadline">
       </div>
       <div class="form-group">
         <div *ngFor="let sponsor of sponsors; let i = index" class="sponsor-item">
@@ -41,11 +41,11 @@
           </div>
           <div class="form-group">
             <label for="sponsorLink{{i}}">Link</label>
-            <input type="text" class="form-control" id="sponsorLink{{i}}" name="sponsorLink{{i}}" [(ngModel)]="sponsors[i].link">
+            <input type="text" class="form-control" id="sponsorLink{{i}}" name="sponsorLink{{i}}" [(ngModel)]="sponsors[i].url">
           </div>
           <div class="form-group">
             <label for="sponsorImage{{i}}">Image Link</label>
-            <input type="text" class="form-control" id="sponsorImage{{i}}" name="sponsorImage{{i}}" [(ngModel)]="sponsors[i].imageLink">
+            <input type="text" class="form-control" id="sponsorImage{{i}}" name="sponsorImage{{i}}" [(ngModel)]="sponsors[i].imageurl">
           </div>
           <button type="button" class="btn btn-danger" (click)="removeSponsor(i)">Remove Sponsor</button>
         </div>
