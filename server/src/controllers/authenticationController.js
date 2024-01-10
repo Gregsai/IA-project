@@ -118,7 +118,7 @@ async function logIn(req, res) {
     res.cookie('token', token, {
       httpOnly: true,
     });
-
+    console.log('token',token);
     res.status(200).json({ token });
   } catch (error) {
     console.error('Error during sign in:', error);
@@ -129,23 +129,32 @@ async function logIn(req, res) {
 async function isLogin(req, res) {
   try {
     const token = req.cookies.token;
-
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const renewalResult = authService.checkAndRenewToken(token);
+    const renewedToken = authService.checkAndRenewToken(token);
 
-    if (renewalResult.renewed) {
-      res.cookie('token', renewalResult.newToken, {
+    if (renewedToken !== null) {
+      res.cookie('token', renewedToken, {
         httpOnly: true,
       });
     }
 
-    return res.status(200).json({ authenticated: !renewalResult.renewed });
+    return res.status(200).json({ authenticated: renewedToken !== null });
   } catch (error) {
     console.error('Error checking login status:', error);
     return res.status(500).json({ error: 'Error checking login status' });
+  }
+}
+
+async function logOut(req, res) {
+  try {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'User logged out successfully' });
+  } catch (error) {
+    console.error('Error during log out:', error);
+    res.status(500).json({ error: 'Error during log out' });
   }
 }
 module.exports = {
@@ -158,5 +167,6 @@ module.exports = {
   sendResetPasswordEmail,
   resetPassword,
   logIn,
-  isLogin
+  isLogin,
+  logOut
 };

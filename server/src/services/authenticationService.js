@@ -295,27 +295,31 @@ async function resetPassword(token, password) {
   }
 }
 
+// Modifie la fonction checkAndRenewToken pour renvoyer le token actuel, un nouveau token ou null en fonction de la validité du token
 function checkAndRenewToken(token) {
   try {
     const decoded = jwt.verify(token, "secret");
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const expirationTime = decoded.exp;
     const timeDifference = expirationTime - currentTimestamp;
-
-    if (timeDifference < 300 && timeDifference > 0) { 
-      
-      const newToken = generateToken(decoded.email);
-      return { renewed: true, newToken };
+    if (timeDifference > 0) {
+      if (timeDifference < 300) { 
+        const newToken = generateToken(decoded.email);
+        return newToken;
+      } else {
+        return token;
+      }
+    } else {
+      return null;
     }
-
-    return { renewed: false, newToken: null };
   } catch (error) {
-    return { renewed: false, newToken: null, error: 'Invalid token' }; 
+    return null;
   }
 }
 
+
 function generateToken(email) {
-  const token = jwt.sign({ email }, secretKey, { expiresIn: '15m' });
+  const token = jwt.sign({ email }, "secret", { expiresIn: '1h' });
   return token;
 }
 

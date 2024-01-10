@@ -53,7 +53,7 @@ export class SignInComponent {
                   );
                   return;
                 } else {
-                  this.attemptSignIn(signInData);
+                  this.attemptlogIn(signInData);
                 }
               },
               (error) => {
@@ -86,6 +86,7 @@ export class SignInComponent {
   attemptSignIn(signInData: any) {
     this.authenticationService.signIn(signInData).subscribe(
       (response: any) => {
+        console.log(response.token);
         if (response && response.token && response.expirationDate) {
           const expirationDate = new Date(response.expirationDate);
           this.authenticationService.storeToken(response.token, expirationDate);
@@ -115,5 +116,29 @@ export class SignInComponent {
   redirectToSignUp(event: Event) {
     event.preventDefault();
     this.router.navigateByUrl('/sign-up', { replaceUrl: true });
+  }
+
+
+  attemptlogIn(signInData: any) {
+    this.authenticationService.logIn(signInData).subscribe(
+      (response: any) => {
+        if (response && response.token) {
+          console.log(response.token);
+          const redirectUrl = this.authenticationService.getRedirectUrl();
+          this.router.navigateByUrl(redirectUrl, { replaceUrl: true }).then(() => {
+            window.location.reload();
+          });
+        }
+      },
+      (error) => {
+        console.error('Error during sign in:', error);
+        this.errorMessage = 'Password is incorrect';
+        this.displayErrorMessage = true;
+        setTimeout(() => {
+          this.displayErrorMessage = false;
+          this.errorMessage = '';
+        }, 5000);
+      }
+    );
   }
 }

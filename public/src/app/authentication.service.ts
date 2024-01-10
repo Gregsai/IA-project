@@ -111,4 +111,22 @@ export class AuthenticationService {
     const verifyAccountURL = `${this.baseURL}/authentication/verify-account/${token}`;
     return this.http.get(verifyAccountURL);
   }
+
+
+
+
+  logIn(signUpData: any) {
+    const signInURL = `${this.baseURL}/authentication/log-in`;
+    return this.http.post(signInURL, signUpData, { withCredentials: true });
+  }
+
+  isLogin() {
+    const signInURL = `${this.baseURL}/authentication/is-logged-in`;
+    return this.http.get(signInURL, { withCredentials: true });
+  }
+
+  logOut2(){
+    const signInURL = `${this.baseURL}/authentication/logout`;
+    return this.http.get(signInURL, { withCredentials: true });
+  }
 }
