@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TournamentsService } from '../tournaments.service';
 
 @Component({
   selector: 'app-tournaments',
@@ -13,7 +14,13 @@ export class TournamentsComponent {
   pages: number[] = [];
   totalPages: number = 0;
   searchTerm: string = '';
+  numberOfUpcomingTournaments: number = 0;
 
+  constructor(
+    private tournamentsService: TournamentsService,
+  ){
+
+  }
   ngOnInit() {
     this.calculatePages();
     this.getTournaments();
@@ -27,7 +34,6 @@ export class TournamentsComponent {
   getTournaments() {
     let filteredData = this.data;
 
-    // Appliquer la recherche aux données uniquement si searchTerm n'est pas vide
     if (this.searchTerm.trim() !== '') {
       filteredData = this.data.filter(tournament => tournament.toLowerCase().includes(this.searchTerm.toLowerCase()));
     }
@@ -35,7 +41,6 @@ export class TournamentsComponent {
     this.totalPages = Math.ceil(filteredData.length / this.tournamentsPerPage);
     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
 
-    // Assurer que currentPage est toujours valide même lorsque le terme de recherche ne renvoie aucun résultat
     this.currentPage = Math.max(1, Math.min(this.currentPage, this.totalPages));
 
     const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
@@ -67,6 +72,16 @@ export class TournamentsComponent {
     // Mettre à jour la recherche à chaque modification du champ
     this.getTournaments();
   }
+
+  getNumberOfUpcomingTournaments(){
+  }
+
+  getUpcomingTournaments(page: number){
+
+  }
+
+
+
 }
 
 
