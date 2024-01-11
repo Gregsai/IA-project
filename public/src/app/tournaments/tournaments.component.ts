@@ -1,53 +1,71 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TournamentsService } from '../tournaments.service';
+import { Subscription } from 'rxjs';
+
+interface Tournament {
+  id: number;
+  organizer: number;
+  name: string;
+  discipline: string;
+  date: string;
+  maxparticipants: number;
+  applicationdeadline: string;
+  address: string;
+  seedingtype: string;
+}
 
 @Component({
   selector: 'app-tournaments',
   templateUrl: './tournaments.component.html',
   styleUrls: ['./tournaments.component.css']
 })
-export class TournamentsComponent {
-  data: string[] = ["tournament 1", "tournament 2", "tournament 3", "tournament 4", "tournament 5", "tournament 6", "tournament 7", "tournament 8", "tournament 9", "tournament 10", "tournament 11", "tournament 12", "tournament 13", "tournament 14", "tournament 15", "tournament 16", "tournament 17", "tournament 18", "tournament 19", "tournament 20", "tournament 21", "tournament 22", "tournament 23", "tournament 24", "tournament 25", "tournament 26", "tournament 27", "tournament 28", "tournament 29", "tournament 30", "tournament 31", "tournament 32", "tournament 33", "tournament 34", "tournament 35", "tournament 36", "tournament 37", "tournament 38", "tournament 39", "tournament 40", "tournament 41", "tournament 42", "tournament 43", "tournament 44", "tournament 45", "tournament 46", "tournament 47", "tournament 48", "tournament 49", "tournament 50"];
-  tournamentsPerPage: number = 10;
-  currentPage: number = 1;
-  displayedTournaments: string[] = [];
-  pages: number[] = [];
+export class TournamentsComponent implements OnInit, OnDestroy {
+  displayedTournaments: Tournament[] = [];
   totalPages: number = 0;
+  currentPage: number = 1;
   searchTerm: string = '';
-  numberOfUpcomingTournaments: number = 0;
+  numberOfUpcomingTournamentsValue: number = 0;
+  private subscription?: Subscription;
+  tournamentsPerPage: number = 10;
 
-  constructor(
-    private tournamentsService: TournamentsService,
-  ){
+  constructor(private tournamentsService: TournamentsService) {}
 
-  }
   ngOnInit() {
-    this.calculatePages();
     this.getTournaments();
   }
 
-  calculatePages() {
-    this.totalPages = Math.ceil(this.data.length / this.tournamentsPerPage);
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
-  getTournaments() {
-    let filteredData = this.data;
+  // calculatePages(totalItems: number, itemsPerPage: number) {
+  //   return Array.from({ length: Math.ceil(totalItems / itemsPerPage) }, (_, i) => i + 1);
+  // }
+  calculatePages(totalItems: number, itemsPerPage: number, currentPage: number, displayCount: number = 5): number[] {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const pages: number[] = [];
 
-    if (this.searchTerm.trim() !== '') {
-      filteredData = this.data.filter(tournament => tournament.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    const firstPage = 1;
+    const lastPage = totalPages;
+    const halfDisplay = Math.floor(displayCount / 2);
+
+    let startPage = Math.max(firstPage, currentPage - halfDisplay);
+    let endPage = Math.min(lastPage, startPage + displayCount - 1);
+
+    if (lastPage - startPage + 1 < displayCount) {
+      startPage = Math.max(firstPage, lastPage - displayCount + 1);
     }
 
-    this.totalPages = Math.ceil(filteredData.length / this.tournamentsPerPage);
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
 
-    this.currentPage = Math.max(1, Math.min(this.currentPage, this.totalPages));
-
-    const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
-    const endIndex = startIndex + this.tournamentsPerPage;
-    this.displayedTournaments = filteredData.slice(startIndex, endIndex);
-    console.log(this.currentPage)
+    return pages;
   }
+
+
 
   selectvaluesIntournament(page: number) {
     this.currentPage = page;
@@ -57,6 +75,7 @@ export class TournamentsComponent {
   previousPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      console.log("Previous page: " + this.currentPage)
       this.getTournaments();
     }
   }
@@ -64,78 +83,35 @@ export class TournamentsComponent {
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      console.log("Next page: " + this.currentPage)
       this.getTournaments();
     }
   }
 
   updateSearch() {
-    // Mettre à jour la recherche à chaque modification du champ
+    this.currentPage = 1;
     this.getTournaments();
   }
 
-  getNumberOfUpcomingTournaments(){
+  private getTournaments() {
+    const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
+    const endIndex = startIndex + this.tournamentsPerPage ;
+    console.log("startIndex: " + startIndex);
+    console.log("endIndex: " + endIndex);
+    this.subscription = this.tournamentsService.getUpcomingTournamentsPage(startIndex, endIndex, this.searchTerm).subscribe(
+      (response: any) => {
+        this.numberOfUpcomingTournamentsValue = response.totalCount;
+        console.log("Number of upcoming tournaments: " + this.numberOfUpcomingTournamentsValue);
+        this.totalPages = Math.ceil(response.totalCount / this.tournamentsPerPage);
+        console.log("total pages: " + this.totalPages);
+        this.currentPage = Math.max(1, Math.min(this.currentPage, this.totalPages));
+        console.log("current page: " + this.currentPage);
+        this.displayedTournaments = response.tournaments;
+        console.log("displayed tournament: " + this.displayedTournaments)
+      },
+      (error) => {
+        console.error('Error fetching tournaments:', error);
+      }
+    );
   }
-
-  getUpcomingTournaments(page: number){
-
-  }
-
-
-
 }
-
-
-
-
-
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-tournaments',
-//   templateUrl: './tournaments.component.html',
-//   styleUrls: ['./tournaments.component.css']
-// })
-// export class TournamentsComponent {
-//   data: string[] = ["tournament 1", "tournament 2", "tournament 3", "tournament 4", "tournament 5", "tournament 6", "tournament 7", "tournament 8", "tournament 9", "tournament 10", "tournament 11", "tournament 12", "tournament 13", "tournament 14", "tournament 15", "tournament 16", "tournament 17", "tournament 18", "tournament 19", "tournament 20", "tournament 21", "tournament 22", "tournament 23", "tournament 24", "tournament 25", "tournament 26", "tournament 27", "tournament 28", "tournament 29", "tournament 30", "tournament 31", "tournament 32", "tournament 33", "tournament 34", "tournament 35", "tournament 36", "tournament 37", "tournament 38", "tournament 39", "tournament 40", "tournament 41", "tournament 42", "tournament 43", "tournament 44", "tournament 45", "tournament 46", "tournament 47", "tournament 48", "tournament 49", "tournament 50"];
-//   tournamentsPerPage: number = 10;
-//   currentPage: number = 1;
-//   displayedTournaments: string[] = [];
-//   pages: number[] = [];
-//   totalPages: number = 0;
-//   searchTerm: string = '';
-
-//   ngOnInit() {
-//     this.calculatePages();
-//     this.getTournaments();
-//   }
-
-//   calculatePages() {
-//     this.totalPages = Math.ceil(this.data.length / this.tournamentsPerPage);
-//     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-//   }
-
-//   getTournaments() {
-//     const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
-//     const endIndex = startIndex + this.tournamentsPerPage;
-//     this.displayedTournaments = this.data.slice(startIndex, endIndex);
-//   }
-
-//   selectvaluesIntournament(page: number) {
-//     this.currentPage = page;
-//     this.getTournaments();
-//   }
-
-//   previousPage() {
-//     if (this.currentPage > 1) {
-//       this.currentPage--;
-//       this.getTournaments();
-//     }
-//   }
-
-//   nextPage() {
-//     if (this.currentPage < this.totalPages) {
-//       this.currentPage++;
-//       this.getTournaments();
-//     }
-//   }
-// }

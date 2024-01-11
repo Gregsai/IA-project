@@ -1,3 +1,4 @@
+
 <div class="container mt-4">
   <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" (input)="updateSearch()" placeholder="Search tournaments">
 
@@ -5,15 +6,28 @@
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Tournament</th>
+        <th scope="col">Name</th>
+        <th scope="col">Discipline</th>
+        <th scope="col">Date</th>
+        <th scope="col">Max Participants</th>
+        <th scope="col">Application Deadline</th>
+        <th scope="col">Address</th>
+        <th scope="col">Seeding Type</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let tournament of displayedTournaments; let i = index">
-        <th scope="row">{{ i + 1 }}</th>
-        <td>{{ tournament }}</td>
+        <th scope="row">{{ (currentPage - 1) * tournamentsPerPage + i + 1 }}</th>
+        <td>{{ tournament.name }}</td>
+        <td>{{ tournament.discipline }}</td>
+        <td>{{ tournament.date }}</td>
+        <td>{{ tournament.maxparticipants }}</td>
+        <td>{{ tournament.applicationdeadline }}</td>
+        <td>{{ tournament.address }}</td>
+        <td>{{ tournament.seedingtype }}</td>
       </tr>
     </tbody>
+
   </table>
 
   <nav aria-label="Page navigation">
@@ -21,12 +35,16 @@
       <li class="page-item" [class.disabled]="currentPage === 1">
         <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
       </li>
-      <li class="page-item" *ngFor="let page of pages">
-        <button class="page-link" (click)="selectvaluesIntournament(page)" [class.active]="currentPage === page">{{ page }}</button>
-      </li>
+      <ng-container *ngIf="displayedTournaments.length > 0">
+        <li class="page-item" *ngFor="let page of calculatePages(numberOfUpcomingTournamentsValue, tournamentsPerPage, currentPage)">
+          <button class="page-link" (click)="selectvaluesIntournament(page)" [class.active]="currentPage === page">{{ page }}</button>
+        </li>
+      </ng-container>
       <li class="page-item" [class.disabled]="currentPage === totalPages">
         <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
       </li>
     </ul>
   </nav>
+
+  <p>{{ numberOfUpcomingTournamentsValue }}</p>
 </div>
