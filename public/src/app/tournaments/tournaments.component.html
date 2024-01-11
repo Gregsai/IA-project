@@ -1,1 +1,32 @@
-<p>tournaments works!</p>
+<div class="container mt-4">
+  <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" (input)="updateSearch()" placeholder="Search tournaments">
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tournament</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tournament of displayedTournaments; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ tournament }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+      </li>
+      <li class="page-item" *ngFor="let page of pages">
+        <button class="page-link" (click)="selectvaluesIntournament(page)" [class.active]="currentPage === page">{{ page }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+      </li>
+    </ul>
+  </nav>
+</div>

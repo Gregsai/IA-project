@@ -17,7 +17,9 @@ import { ResetPasswordComponent } from './authentication-components/reset-passwo
 import { MyTournamentsComponent } from './my-tournaments/my-tournaments.component';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +39,10 @@ import { TournamentsComponent } from './tournaments/tournaments.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   providers: [provideHttpClient(withFetch()),],
   bootstrap: [AppComponent]
