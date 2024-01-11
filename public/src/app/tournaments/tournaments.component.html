@@ -1,36 +1,40 @@
+<h1>Upcoming tournaments</h1>
+<div class="container-fluid mt-4">
+  <div id="search-term">
+    <input type="text"  class="form-control mb-3" [(ngModel)]="searchTerm" (input)="updateSearch()" placeholder="Search tournaments">
+  </div>
+  <div id="tournament-table">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Discipline</th>
+          <th scope="col">Date/Hour</th>
+          <th scope="col">Max Participants</th>
+          <th scope="col">Application Deadline</th>
+          <th scope="col">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tournament of displayedTournaments; let i = index">
+          <th scope="row">{{ (currentPage - 1) * tournamentsPerPage + i + 1 }}</th>
+          <td class="tournament-name">
+            <a [routerLink]="['/tournament-description', tournament.id]">{{ tournament.name }}</a>
+          </td>
+          <td>{{ tournament.discipline }}</td>
+          <td>{{ tournament.date | date:'dd/MM/yyyy hh:mm' }}</td>
+          <td>{{ tournament.maxparticipants }}</td>
+          <td>{{ tournament.applicationdeadline | date:'dd/MM/yyyy hh:mm' }}</td>
+          <td>{{ tournament.address }}</td>
+        </tr>
+      </tbody>
 
-<div class="container mt-4">
-  <input type="text" class="form-control mb-3" [(ngModel)]="searchTerm" (input)="updateSearch()" placeholder="Search tournaments">
+    </table>
+  </div>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Discipline</th>
-        <th scope="col">Date</th>
-        <th scope="col">Max Participants</th>
-        <th scope="col">Application Deadline</th>
-        <th scope="col">Address</th>
-        <th scope="col">Seeding Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let tournament of displayedTournaments; let i = index">
-        <th scope="row">{{ (currentPage - 1) * tournamentsPerPage + i + 1 }}</th>
-        <td>{{ tournament.name }}</td>
-        <td>{{ tournament.discipline }}</td>
-        <td>{{ tournament.date }}</td>
-        <td>{{ tournament.maxparticipants }}</td>
-        <td>{{ tournament.applicationdeadline }}</td>
-        <td>{{ tournament.address }}</td>
-        <td>{{ tournament.seedingtype }}</td>
-      </tr>
-    </tbody>
 
-  </table>
-
-  <nav aria-label="Page navigation">
+  <nav aria-label="Page navigation" id="navigation">
     <ul class="pagination justify-content-center">
       <li class="page-item" [class.disabled]="currentPage === 1">
         <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
@@ -45,6 +49,4 @@
       </li>
     </ul>
   </nav>
-
-  <p>{{ numberOfUpcomingTournamentsValue }}</p>
 </div>

@@ -1,7 +1,7 @@
 .sign-in-up{
   color: black;
-  background-color: #EBF82C;
-  border-color: #EBF82C;
+  background-color: #FFCC00;
+  border-color: #FFCC00;
   width: 100%;
   font-weight: bold;
 }
@@ -35,10 +35,18 @@
   width: 70%;
   font-weight: bold;
   margin-inline: 10px;
-  background-color: #EBF82C;
-  border-color: #EBF82C;
+  background-color: #FFCC00;
+  border-color: #FFCC00;
 }
 
 button img{
   width: 20px;
+}
+
+
+.btn-danger{
+  color: black;
+  font-weight: bold;
+  background-color: #FF004C;
+  border-color: #FF004C;
 }

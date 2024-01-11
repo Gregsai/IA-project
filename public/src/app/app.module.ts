@@ -20,6 +20,7 @@ import { TournamentsComponent } from './tournaments/tournaments.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ResetPasswordComponent,
     MyTournamentsComponent,
     CreateTournamentComponent,
-    TournamentsComponent
+    TournamentsComponent,
+    TournamentDescriptionComponent
   ],
   imports: [
     BrowserModule,

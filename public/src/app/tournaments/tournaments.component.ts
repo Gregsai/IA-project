@@ -40,9 +40,6 @@ export class TournamentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // calculatePages(totalItems: number, itemsPerPage: number) {
-  //   return Array.from({ length: Math.ceil(totalItems / itemsPerPage) }, (_, i) => i + 1);
-  // }
   calculatePages(totalItems: number, itemsPerPage: number, currentPage: number, displayCount: number = 5): number[] {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const pages: number[] = [];
@@ -75,7 +72,6 @@ export class TournamentsComponent implements OnInit, OnDestroy {
   previousPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      console.log("Previous page: " + this.currentPage)
       this.getTournaments();
     }
   }
@@ -83,7 +79,6 @@ export class TournamentsComponent implements OnInit, OnDestroy {
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      console.log("Next page: " + this.currentPage)
       this.getTournaments();
     }
   }
@@ -96,18 +91,12 @@ export class TournamentsComponent implements OnInit, OnDestroy {
   private getTournaments() {
     const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
     const endIndex = startIndex + this.tournamentsPerPage ;
-    console.log("startIndex: " + startIndex);
-    console.log("endIndex: " + endIndex);
     this.subscription = this.tournamentsService.getUpcomingTournamentsPage(startIndex, endIndex, this.searchTerm).subscribe(
       (response: any) => {
         this.numberOfUpcomingTournamentsValue = response.totalCount;
-        console.log("Number of upcoming tournaments: " + this.numberOfUpcomingTournamentsValue);
         this.totalPages = Math.ceil(response.totalCount / this.tournamentsPerPage);
-        console.log("total pages: " + this.totalPages);
         this.currentPage = Math.max(1, Math.min(this.currentPage, this.totalPages));
-        console.log("current page: " + this.currentPage);
         this.displayedTournaments = response.tournaments;
-        console.log("displayed tournament: " + this.displayedTournaments)
       },
       (error) => {
         console.error('Error fetching tournaments:', error);

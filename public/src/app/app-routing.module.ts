@@ -11,6 +11,7 @@ import { ResetPasswordComponent } from './authentication-components/reset-passwo
 import { MyTournamentsComponent } from './my-tournaments/my-tournaments.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
+import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -22,7 +23,8 @@ const routes: Routes = [
   {path: 'verify-account/:token', component: VerifyAccountComponent },
   {path: 'my-tournaments', component: MyTournamentsComponent},
   {path: 'tournaments', component: TournamentsComponent},
-  {path: 'create-tournament', component: CreateTournamentComponent}
+  {path: 'create-tournament', component: CreateTournamentComponent},
+  { path: 'tournament-description/:id', component: TournamentDescriptionComponent },
 
 ];
 
