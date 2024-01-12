@@ -1,4 +1,37 @@
 .map-container {
-  width: 100%;
-  height: 400px;
+  width: 200px;
+  height: 200px;
+  border: solid 1px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+
+#tournament-description-main{
+  background-color: red;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#tournament-description-left-part{
+  background-color: blue;
+  height: 100%;
+  width: 25%;
+}
+
+#tournament-description-right-part{
+  background-color: green;
+  height: 100%;
+  width: 75%;
+}
+
+#tournament-description-right-part-header{
+  background-color: aliceblue;
+  height: 7%;
+}
+
+#tournament-description-right-part-main{
+  background-color: aqua;
+  height: 93%;
 }

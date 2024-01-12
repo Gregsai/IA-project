@@ -1,35 +1,5 @@
 const tournamentService = require("../services/tournamentService");
 
-async function getNumberOfUpcomingTournaments(req, res) {
-    try {
-        const result = await tournamentService.getNumberOfUpcomingTournaments();
-        if (result !== null && result !== undefined) {
-            return res.status(200).json(result);
-        } else {
-            return res.status(500).json({ error: 'no upcoming tournaments' });
-        }
-    } catch (error) {
-        return res.status(500).json({
-            error: "Error getting number of upcoming tournaments",
-            message: error.message
-        });
-    }
-}
-
-async function getTournamentsPerPage(req, res) {
-    try {
-        const { startIndex, endIndex, searchTerm } = req.query; // Utilisez req.query pour récupérer les paramètres de la requête
-        // Continuez avec le reste de votre logique...
-        const tournaments = await tournamentService.getTournamentsPerPage(startIndex, endIndex, searchTerm);
-        return res.status(200).json(tournaments);
-    } catch (error) {
-        return res.status(500).json({
-            error: "Error getting tournaments",
-            message: error.message
-        });
-    }
-}
-
 async function getUpcomingTournamentsPage(req, res) {
     try {
         const { startIndex, endIndex, searchTerm } = req.query;
@@ -42,9 +12,48 @@ async function getUpcomingTournamentsPage(req, res) {
         });
     }
 }
+async function getTournamentInformation(req, res) {
+    try {
+        const { id } = req.params;
+        const tournamentInformation = await tournamentService.getTournamentInformation(id);
+        return res.status(200).json(tournamentInformation);
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tournament information",
+            message: error.message
+        });
+    }
+}
+
+async function getTournamentSponsors(req, res) {
+    try {
+        const { id } = req.params;
+        const tournamentSponsors = await tournamentService.getTournamentSponsors(id);
+        return res.status(200).json(tournamentSponsors);
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tournament sponsors",
+            message: error.message
+        });
+    }
+}
+
+async function getTournamentParticipantsList(req, res) {
+    try {
+        const { id } = req.params;
+        const participantsList = await tournamentService.getTournamentParticipantsList(id);
+        return res.status(200).json(participantsList);
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tournament participants list",
+            message: error.message
+        });
+    }
+}
 
 module.exports = {
-    getNumberOfUpcomingTournaments,
-    getTournamentsPerPage,
-    getUpcomingTournamentsPage
+    getUpcomingTournamentsPage,
+    getTournamentInformation,
+    getTournamentSponsors,
+    getTournamentParticipantsList,
 };

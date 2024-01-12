@@ -1,50 +1,6 @@
 const pool = require("../../config/database");
 
-async function getNumberOfUpcomingTournaments() {
-    try {
-      const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
-      const query = `SELECT COUNT(*) AS count FROM tournaments WHERE date >= '${currentDate}'`;
-      const result = await pool.query(query);
-  
-      if (result.rowCount > 0 && result.rows[0].count !== null) {
-        const numberOfUpcomingTournaments = parseInt(result.rows[0].count, 10);
-        return numberOfUpcomingTournaments;
-      } else {
-        return 0;
-      }
-    } catch (error) {
-      console.error("Error getting number of upcoming tournaments:", error);
-      throw error;
-    }
-  }
 
-
-
-async function getTournamentsPerPage(startIndex, endIndex, searchTerm) {
-    try {
-        console.log("search term :",searchTerm);
-        
-        console.log("start index:",startIndex);
-        console.log("end index :",endIndex);
-        let offset = 0;
-        if(startIndex != 0){
-            offset = (startIndex - 1) * 10; 
-        }
-        const limit = endIndex - startIndex;
-        const query = `
-            SELECT * FROM tournaments
-            WHERE name ILIKE $1
-            ORDER BY date
-            LIMIT $2 OFFSET $3
-        `;
-        const result = await pool.query(query, [`%${searchTerm}%`, limit, offset]);
-        console.log(result);
-        return result.rows;
-    } catch (error) {
-        console.error("Error getting tournaments per page:", error);
-        throw error;
-    }
-}
 
 async function getUpcomingTournamentsPage(startIndex, endIndex, searchTerm) {
     try {
@@ -85,10 +41,57 @@ async function getUpcomingTournamentsPage(startIndex, endIndex, searchTerm) {
     }
 }
 
+async function getTournamentInformation(id) {
+    try {
+        const query = `
+            SELECT * FROM tournaments
+            WHERE id = $1
+        `;
+        const result = await pool.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            throw new Error(`Tournament with id ${id} not found`);
+        }
+
+        return result.rows[0];
+    } catch (error) {
+        console.error("Error getting tournament information:", error);
+        throw error;
+    }
+}
+
+async function getTournamentSponsors(id) {
+    try {
+        const query = `
+            SELECT * FROM sponsors
+            WHERE tournament = $1
+        `;
+        const result = await pool.query(query, [id]);
+        return result.rows;
+    } catch (error) {
+        console.error("Error getting tournament sponsors:", error);
+        throw error;
+    }
+}
+
+async function getTournamentParticipantsList(id) {
+    try {
+        const query = `
+            SELECT * FROM participants
+            WHERE tournament = $1
+        `;
+        const result = await pool.query(query, [id]);
+        return result.rows;
+    } catch (error) {
+        console.error("Error getting tournament participants list:", error);
+        throw error;
+    }
+}
 
 
 module.exports = {
-  getNumberOfUpcomingTournaments,
-  getTournamentsPerPage,
-  getUpcomingTournamentsPage
+  getUpcomingTournamentsPage,
+  getTournamentInformation,
+  getTournamentSponsors,
+  getTournamentParticipantsList,
 };

@@ -1,1 +1,36 @@
-<div class="map-container"></div>
+<div id="tournament-description-main">
+  <div id="tournament-description-left-part">
+    <p>Name : {{ tournamentData?.name }}</p>
+    <p>Organizer : {{ tournamentData?.organizer }}</p>
+    <p>Discipline : {{ tournamentData?.discipline }}</p>
+    <p>Date : {{ tournamentData?.date }}</p>
+    <p>Max participants : {{ tournamentData?.maxparticipants }}</p>
+    <p>Application deadline : {{ tournamentData?.applicationdeadline }}</p>
+    <p>address : {{ tournamentData?.address }}</p>
+    <p>seeding type : {{ tournamentData?.seedingtype }}</p>
+
+    <div *ngIf="latitude && longitude">
+      Latitude: {{ latitude }}<br>
+      Longitude: {{ longitude }}
+    </div>
+    <div class="map-container"></div>
+  </div>
+  <div id="tournament-description-right-part">
+    <div id="tournament-description-right-part-header">
+
+    </div>
+    <div id="tournament-description-right-part-main">
+      <div id="tournament-description-right-part-main-participants">
+
+      </div>
+      <div id="tournament-description-right-part-main-ladder">
+
+      </div>
+      <div id="tournament-description-right-part-main-matchs">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
