@@ -3,6 +3,7 @@ import Map from 'ol/Map.js';
 import OSM from 'ol/source/OSM.js';
 import TileLayer from 'ol/layer/Tile.js';
 import View from 'ol/View.js';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tournament-description',
@@ -10,21 +11,27 @@ import View from 'ol/View.js';
   styleUrls: ['./tournament-description.component.css']
 })
 export class TournamentDescriptionComponent implements AfterViewInit {
-  private map!: Map;  // Utilisation de l'opérateur "!" pour indiquer à TypeScript que la propriété sera initialisée
+  private map!: Map;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(
+    private elementRef: ElementRef,
+    private route: ActivatedRoute) {
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      const mapContainer = this.elementRef.nativeElement.querySelector('.map-container');
+    }
 
-      if (mapContainer.clientWidth > 0 && mapContainer.clientHeight > 0) {
-        this.initializeMap(mapContainer);
-      } else {
-        console.warn("Map container has zero dimensions.");
-      }
-    }, 0);
-  }
+    ngAfterViewInit(): void {
+      setTimeout(() => {
+        const mapContainer = this.elementRef.nativeElement.querySelector('.map-container');
+
+        if (mapContainer.clientWidth > 0 && mapContainer.clientHeight > 0) {
+          const tournamentId = this.route.snapshot.params['id'];
+          console.log(tournamentId)
+          this.initializeMap(mapContainer);
+        } else {
+          console.warn("Map container has zero dimensions.");
+        }
+      }, 0);
+    }
 
   private initializeMap(targetElement: HTMLElement) {
     const baseLayer = new TileLayer({

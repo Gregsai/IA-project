@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../authentication.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -8,33 +8,31 @@ import { filter } from 'rxjs/operators';
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-export class AuthComponent {
-  userLoggedIn : string = 'none'
-  authState: string = 'sign-in'
+export class AuthComponent implements OnInit {
+  userLoggedIn: string = 'none';
+  authState: string = 'sign-in';
 
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router
-    ) {
-  }
+  ) {}
+
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
       this.checkLoginStatus();
       this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        console.log('User logged in');
-        this.checkLoginStatus();
-      });
-    } else {
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          console.log('User logged in');
+          this.checkLoginStatus();
+        });
     }
   }
 
-
-  checkLoginStatus() {
+  checkLoginStatus(): void {
     this.authenticationService.isLoggedIn().subscribe(
-      (response: any) => {
-        if (response && response.authenticated) {
+      (response: boolean) => {
+        if (response) {
           this.userLoggedIn = 'connected';
         } else {
           this.userLoggedIn = 'disconnected';
@@ -47,9 +45,9 @@ export class AuthComponent {
   }
 
   logOut(): void {
-      this.authenticationService.logOut().subscribe(()=> {
-        this.checkLoginStatus();
-        window.location.reload();
-      })
-    }
+    this.authenticationService.logOut().subscribe(() => {
+      this.checkLoginStatus();
+      window.location.reload();
+    });
+  }
 }

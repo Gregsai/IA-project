@@ -13,12 +13,4 @@ export class AppComponent {
     private router: Router,
     private authService: AuthenticationService
   ) {}
-  goToMyTournaments() {
-    if (!this.authService.isLoggedIn()) {
-      this.authService.setRedirectUrl('/my-tournaments');
-      this.router.navigateByUrl('/sign-in');
-    } else {
-      this.router.navigateByUrl('/my-tournaments');
-    }
-  }
 }

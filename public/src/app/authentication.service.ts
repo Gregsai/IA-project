@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -78,10 +78,14 @@ export class AuthenticationService {
     return this.http.post(signInURL, signUpData, { withCredentials: true });
   }
 
-  isLoggedIn() {
+  isLoggedIn(): Observable<boolean> {
     const isLoggedInURL = `${this.baseURL}/authentication/is-logged-in`;
-    return this.http.get(isLoggedInURL, { withCredentials: true });
+    return this.http.get<{ authenticated: boolean }>(isLoggedInURL, { withCredentials: true })
+      .pipe(
+        map(response => response.authenticated)
+      );
   }
+
 
   logOut(){
     const logOutURL = `${this.baseURL}/authentication/log-out`;

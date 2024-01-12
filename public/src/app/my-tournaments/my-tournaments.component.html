@@ -1,4 +1,4 @@
-<div id="my-tournaments">
+<div id="my-tournaments" *ngIf="isLoggedIn">
   <div id="my-tournaments-header">
     <button type="button" class="btn sign-in-up" [routerLink]="['../create-tournament']">
       Create a new tournament
