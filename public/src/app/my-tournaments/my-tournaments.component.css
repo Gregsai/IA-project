@@ -1,6 +1,20 @@
+#my-tournaments{
+display: flex;
+flex-direction: column;
+}
+#my-tournaments-header{
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  border: solid 1px;
+  border-radius: 20px;
+  padding: 10px;
+}
 button{
   color: black;
-  width: 70%;
+  width: 20%;
   font-weight: bold;
   margin-inline: 10px;
   background-color: #FFCC00;
