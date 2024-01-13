@@ -1,19 +1,27 @@
 <div id="tournament-description-main">
   <div id="tournament-description-left-part">
-    <p>Name : {{ tournamentData?.name }}</p>
-    <p>Organizer : {{ tournamentData?.organizer }}</p>
-    <p>Discipline : {{ tournamentData?.discipline }}</p>
-    <p>Date : {{ tournamentData?.date }}</p>
-    <p>Max participants : {{ tournamentData?.maxparticipants }}</p>
-    <p>Application deadline : {{ tournamentData?.applicationdeadline }}</p>
-    <p>address : {{ tournamentData?.address }}</p>
-    <p>seeding type : {{ tournamentData?.seedingtype }}</p>
+    <div id="tournament-description-left-part-title">
+      <p>{{ tournamentData?.name }}</p>
 
-    <div *ngIf="latitude && longitude">
-      Latitude: {{ latitude }}<br>
-      Longitude: {{ longitude }}
     </div>
-    <div class="map-container"></div>
+    <div id="tournament-description-left-part-informations">
+      <p><strong>Discipline : </strong>{{ tournamentData?.discipline }}</p>
+      <p><strong>Organizer : </strong>{{ tournamentData?.organizer_email }}</p>
+      <p><strong>seeding type : </strong>{{ tournamentData?.seedingtype }}</p>
+      <p><strong>Date : </strong>{{ tournamentData?.dateOnly }} at {{ tournamentData?.timeOnly }} </p>
+      <p><strong>Number of participants : </strong>{{numberOfParticipants}}/{{ tournamentData?.maxparticipants }}</p>
+      <p><strong>Number of ranked participants : </strong>{{numberOfRankedPlayers}}</p>
+      <p><strong>Application deadline : </strong>{{ tournamentData?.deadlineDateOnly }} at {{ tournamentData?.deadlineTimeOnly }}</p>
+      <p><strong>Address : </strong>{{ tournamentData?.address }}</p>
+      <div class="map-container"></div>
+    </div>
+    <div id="tournament-description-left-part-sponsors">
+      <div *ngFor="let sponsor of tournamentSponsors">
+        <a href="{{sponsor.url}}" target="_blank">
+          <img [src]="sponsor.imageurl" alt="Sponsor Image" id="sponsor-image">
+        </a>
+      </div>
+    </div>
   </div>
   <div id="tournament-description-right-part">
     <div id="tournament-description-right-part-header">

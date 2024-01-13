@@ -44,8 +44,10 @@ async function getUpcomingTournamentsPage(startIndex, endIndex, searchTerm) {
 async function getTournamentInformation(id) {
     try {
         const query = `
-            SELECT * FROM tournaments
-            WHERE id = $1
+            SELECT tournaments.*, users.email as organizer_email
+            FROM tournaments
+            JOIN users ON tournaments.organizer = users.id
+            WHERE tournaments.id = $1
         `;
         const result = await pool.query(query, [id]);
 
@@ -59,6 +61,7 @@ async function getTournamentInformation(id) {
         throw error;
     }
 }
+
 
 async function getTournamentSponsors(id) {
     try {
@@ -77,8 +80,10 @@ async function getTournamentSponsors(id) {
 async function getTournamentParticipantsList(id) {
     try {
         const query = `
-            SELECT * FROM participants
-            WHERE tournament = $1
+            SELECT participants.*, users.email as participant_email
+            FROM participants
+            JOIN users ON participants.participant = users.id
+            WHERE participants.tournament = $1
         `;
         const result = await pool.query(query, [id]);
         return result.rows;
@@ -87,6 +92,7 @@ async function getTournamentParticipantsList(id) {
         throw error;
     }
 }
+
 
 
 module.exports = {

@@ -19,7 +19,9 @@ export class TournamentDescriptionComponent implements AfterViewInit {
   tournamentData: any;
   tournamentSponsors: any;
   tournamentParticipants: any;
-  address = '1600 Amphitheatre Parkway, Mountain View, CA';
+  numberOfParticipants: number = 0;
+  numberOfRankedPlayers: number = 0;
+  address = '';
   latitude: number = 1;
   longitude: number = 1;
 
@@ -30,40 +32,32 @@ export class TournamentDescriptionComponent implements AfterViewInit {
     private geocodingService: GeocodingService
   ) {}
 
-  ngOnInit() {
-    this.geocodeAddress();
-  }
-
   ngAfterViewInit(): void {
     setTimeout(() => {
       const mapContainer = this.elementRef.nativeElement.querySelector('.map-container');
       if (mapContainer.clientWidth > 0 && mapContainer.clientHeight > 0) {
         const tournamentId = this.route.snapshot.params['id'];
-        console.log(tournamentId);
         this.initializeMap(mapContainer);
         this.getTournamentInformation(tournamentId);
         this.getTournamentSponsors(tournamentId);
         this.getTournamentParticipantsList(tournamentId);
       } else {
-        console.warn('Map container has zero dimensions.');
       }
     }, 0);
   }
 
   private initializeMap(targetElement: HTMLElement) {
     useGeographic();
-
     const baseLayer = new TileLayer({
       source: new OSM(),
     });
-
     this.map = new Map({
       layers: [baseLayer],
       target: targetElement,
       controls: defaultControls({ attribution: false, zoom: false, rotate: false }),
       view: new View({
-        center: [0, 0], // Centre initial, sera mis à jour plus tard
-        zoom: 15,
+        center: [0, 0],
+        zoom: 12,
       }),
     });
   }
@@ -82,7 +76,12 @@ export class TournamentDescriptionComponent implements AfterViewInit {
       (data) => {
         this.tournamentData = data;
         this.address = this.tournamentData.address;
+        this.tournamentData.dateOnly = this.getDateFromISOString(this.tournamentData.date);
+        this.tournamentData.timeOnly = this.getTimeFromISOString(this.tournamentData.date);
+        this.tournamentData.deadlineDateOnly = this.getDateFromISOString(this.tournamentData.applicationdeadline);
+        this.tournamentData.deadlineTimeOnly = this.getTimeFromISOString(this.tournamentData.applicationdeadline);
         this.geocodeAddress();
+        this.updateMapView();
       },
       (error) => {
         console.error('Error fetching tournament information:', error);
@@ -107,8 +106,9 @@ export class TournamentDescriptionComponent implements AfterViewInit {
     this.tournamentsService.getTournamentParticipantsList(tournamentId).subscribe(
       (data) => {
         this.tournamentParticipants = data;
-
-        this.updateMapView();
+        this.numberOfParticipants = this.tournamentParticipants.length;
+        this.numberOfRankedPlayers = this.tournamentParticipants.filter((participant: any) => participant.rank !== null && participant.rank !== undefined && participant.rank !== 0).length;
+        console.log('here',this.tournamentParticipants.length)
       },
       (error) => {
         console.error('Error fetching tournament participants:', error);
@@ -133,5 +133,21 @@ export class TournamentDescriptionComponent implements AfterViewInit {
         console.error('Error during geocoding:', error);
       }
     );
+  }
+
+  getDateFromISOString(date:string) {
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObject.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  getTimeFromISOString(date:string) {
+    const dateObject = new Date(date);
+    const hours = dateObject.getUTCHours().toString().padStart(2, '0');
+    const minutes = dateObject.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = dateObject.getUTCSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
   }
 }

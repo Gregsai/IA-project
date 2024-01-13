@@ -94,7 +94,10 @@ export class CreateTournamentComponent {
 
     const currentDate = new Date().toISOString();
     console.log("date: " + currentDate)
-    if (date < currentDate) {
+
+    const userDate = new Date(date);
+    const userCurrentDate = new Date();
+    if (userDate < userCurrentDate) {
       this.showError = true;
       this.errorMessage = 'Please select a date in the future for the tournament';
       return;
@@ -109,12 +112,17 @@ export class CreateTournamentComponent {
     }
 
     const currentDate = new Date().toISOString();
-    if (deadline < currentDate) {
+    const userDeadline = new Date(deadline);
+    const userCurrentDate = new Date();
+
+    if (userDeadline < userCurrentDate) {
       this.showError = true;
       this.errorMessage = 'Please select a deadline in the future for application deadline';
       return;
     }
-    if (date < deadline) {
+
+    const userTournamentDate = new Date(date);
+    if (userTournamentDate < userDeadline) {
       this.showError = true;
       this.errorMessage = 'Please select a deadline that is before the tournament date';
       return;

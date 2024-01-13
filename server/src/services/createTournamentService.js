@@ -14,7 +14,7 @@ async function createTournament(
   ) {
     try {
       const tournamentInsertQuery = `
-        INSERT INTO tournaments(organizer, name, discipline, date, maxParticipants, applicationDeadline, address, seedingType)
+        INSERT INTO tournaments(organizer, name, discipline, date, maxParticipants, applicationdeadline, address, seedingtype)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id`;
       const tournamentInsertValues = [
@@ -27,7 +27,7 @@ async function createTournament(
         address,
         seedingType,
       ];
-      console.log(tournamentInsertValues)
+      console.log("inserted values",tournamentInsertValues)
       const tournamentResult = await pool.query(tournamentInsertQuery, tournamentInsertValues);
       const tournamentId = tournamentResult.rows[0].id;
       console.log(tournamentResult)
