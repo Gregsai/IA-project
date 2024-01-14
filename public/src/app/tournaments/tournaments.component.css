@@ -29,8 +29,6 @@ h1 {
 
 .table {
   margin: 0;
-  background-color: #14213D;
-  color: white;
   border-radius: 30px;
   overflow: hidden;
   font-size: 13px;
@@ -50,7 +48,7 @@ h1 {
 }
 
 .page-item > button{
-  background-color: #14213D;
+  background-color: #363A3F;
   color: #E5E5E5;
 }
 

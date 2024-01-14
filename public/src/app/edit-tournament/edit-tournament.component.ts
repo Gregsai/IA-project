@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateTournamentService } from '../create-tournament.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TournamentsService } from '../tournaments.service';
+import { CreateTournamentService } from '../create-tournament.service';
 import { AuthenticationService } from '../authentication.service';
 
 @Component({
-  selector: 'app-create-tournament',
-  templateUrl: './create-tournament.component.html',
-  styleUrls: ['./create-tournament.component.css']
+  selector: 'app-edit-tournament',
+  templateUrl: './edit-tournament.component.html',
+  styleUrl: './edit-tournament.component.css'
 })
-export class CreateTournamentComponent implements OnInit {
+export class EditTournamentComponent implements OnInit {
+  tournamentId : string = '';
+  tournamentData: any;
+  tournamentSponsors: any;
   name: string = '';
   discipline: string = '';
   seedingType: string = '';
@@ -21,33 +25,73 @@ export class CreateTournamentComponent implements OnInit {
   errorMessage: string = '';
   disableButton: boolean = false;
   isLoggedIn: boolean = false;
+  private redirectUrl: string = '/';
 
   constructor(
     private route: ActivatedRoute,
+    private tournamentsService: TournamentsService,
     private createTournamentService : CreateTournamentService,
+    private authService: AuthenticationService,
     private router: Router,
-    private authService: AuthenticationService
-    ) {
-  }
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
       this.isLoggedIn = loggedIn;
       if(!this.isLoggedIn) {
-        this.authService.setRedirectUrl(`/create-tournament`);
+        this.authService.setRedirectUrl(`/tournament-description/${this.route.snapshot.params['id']}`);
         this.router.navigateByUrl('/sign-in',{ replaceUrl: true });
       }
     });
   }
+
+  ngAfterViewInit() {
+    this.tournamentId = this.route.snapshot.params['id'];
+    this.getTournamentInformation(this.tournamentId);
+    this.getTournamentSponsors(this.tournamentId);
+    this.redirectUrl = this.authService.getRedirectUrl();
+  }
+  private getTournamentInformation(tournamentId: string) {
+    this.tournamentsService.getTournamentInformation(tournamentId).subscribe(
+      (data) => {
+        this.tournamentData = data;
+        this.name = this.tournamentData.name;
+        this.discipline = this.tournamentData.discipline;
+        this.seedingType = this.tournamentData.seedingType;
+        this.date = new Date(this.tournamentData.date).toISOString().slice(0, 16);
+        this.address = this.tournamentData.address;
+        this.applicationDeadline = new Date(this.tournamentData.applicationdeadline).toISOString().slice(0, 16);
+        this.maxParticipants = this.tournamentData.maxparticipants;
+        this.seedingType = this.tournamentData.seedingtype;
+      },
+      (error) => {
+        console.error('Error fetching tournament information:', error);
+      }
+    );
+  }
+
+  private getTournamentSponsors(tournamentId: string) {
+    this.tournamentsService.getTournamentSponsors(tournamentId).subscribe(
+      (data) => {
+        this.tournamentSponsors = data;
+        this.sponsors = this.tournamentSponsors
+      },
+      (error) => {
+        console.error('Error fetching tournament sponsors:', error);
+      }
+    );
+  }
+
   addSponsor(): void {
-    this.sponsors.push({ name: '', url: '', imageurl: '' });
+    this.tournamentSponsors.push({ name: '', url: '', imageurl: '' });
   }
 
   removeSponsor(index: number): void {
-    this.sponsors.splice(index, 1);
+    this.tournamentSponsors.splice(index, 1);
   }
 
-  createTournament(): void {
+
+  editTournament(): void {
     this.validateFields();
     if (this.errorMessage) {
       this.disableButton = true;
@@ -60,6 +104,7 @@ export class CreateTournamentComponent implements OnInit {
       return;
     }
     const tournamentData = {
+      id:this.tournamentId,
       name: this.name,
       discipline: this.discipline,
       date: this.date,
@@ -69,23 +114,25 @@ export class CreateTournamentComponent implements OnInit {
       seedingType: this.seedingType,
       sponsors: this.sponsors,
     };
-    this.createTournamentService.createTournament(tournamentData).subscribe(
+    this.createTournamentService.editTournament(tournamentData).subscribe(
       (response: any) => {
-        console.log("response: " + response);
-        this.disableButton = true;
-        this.errorMessage = 'Tournament created successfully';
-        this.showError = true;
-        setTimeout(() => {
-          this.disableButton = false;
-          this.showError = false;
-          this.errorMessage = "";
-          this.router.navigateByUrl('/my-tournaments', { replaceUrl: true });
-        }, 5000);
-        return;
+        if(response.message){
+          console.log("response: " + response);
+          this.disableButton = true;
+          this.errorMessage = 'Tournament edited successfully';
+          this.showError = true;
+          setTimeout(() => {
+            this.disableButton = false;
+            this.showError = false;
+            this.errorMessage = "";
+            this.router.navigateByUrl(this.redirectUrl, { replaceUrl: true });
+          }, 5000);
+          return;
+        }
       },
       (error) => {
-        console.error('Error while creating tournament:', error);
-        this.errorMessage = 'Error while creating tournament';
+        console.error('Error while editing tournament:', error);
+        this.errorMessage = 'Error while editing tournament';
         this.disableButton = true;
         this.showError = true;
         setTimeout(() => {

@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
+import { EditTournamentComponent } from './edit-tournament/edit-tournament.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +37,8 @@ import { TournamentDescriptionComponent } from './tournament-description/tournam
     MyTournamentsComponent,
     CreateTournamentComponent,
     TournamentsComponent,
-    TournamentDescriptionComponent
+    TournamentDescriptionComponent,
+    EditTournamentComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 <div class="tournament-form">
-  <h3>Create Tournament</h3>
+  <h3>Edit Tournament</h3>
   <div class="form-content">
     <form #tournamentForm="ngForm">
       <div class="form-group">
@@ -54,8 +54,8 @@
       </div>
       <p *ngIf="showError" class="error-message">{{ errorMessage }}</p>
       <div id="buttons">
-        <button type="button" class="btn" (click)="createTournament()" [disabled]="disableButton">
-          Create Tournament
+        <button type="button" class="btn" (click)="editTournament()" [disabled]="disableButton">
+          Update Tournament
         </button>
       </div>
     </form>

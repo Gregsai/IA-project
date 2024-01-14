@@ -15,6 +15,7 @@
       <p><strong>Address : </strong>{{ tournamentData?.address }}</p>
       <div class="map-container"></div>
     </div>
+
     <div id="tournament-description-left-part-sponsors">
       <div *ngFor="let sponsor of tournamentSponsors">
         <a href="{{sponsor.url}}" target="_blank">
@@ -25,12 +26,51 @@
   </div>
   <div id="tournament-description-right-part">
     <div id="tournament-description-right-part-header">
+      <div id="tournament-description-right-part-header-sections">
+        <div id="tournament-description-right-part-header-participants" class="participants" [class.active]="activeSection === 'participants'" >
+          <button class="btn">Participants</button>
+        </div>
+        <div *ngIf="displayLadder" id="tournament-description-right-part-header-ladder" class = "ladder" [class.active]="activeSection === 'ladder'">
+          <button class="btn ">Ladder</button>
+        </div>
+        <div *ngIf="displayMatchs" id="tournament-description-right-part-header-matchs" class = "matchs" [class.active]="activeSection === 'matchs'">
+          <button class="btn matchs">Matchs</button>
+        </div>
+      </div>
+      <div id="tournament-description-right-part-header-buttons">
+        <button *ngIf="isParticipantOfTournament=== 'false'" type="button" class="btn participate" (click)="participate()">
+          Participate
+        </button>
+
+        <button *ngIf="isParticipantOfTournament=== 'true'" type="button" class="btn unparticipate" (click)="unparticipate()">
+          Quit
+        </button>
+
+        <button  *ngIf="isOrganizerOfTournament=== 'true'" type="button" class="btn edit" (click)="editTournament()">
+          Edit
+        </button>
+      </div>
+
 
     </div>
     <div id="tournament-description-right-part-main">
-      <div id="tournament-description-right-part-main-participants">
-
+      <div *ngIf="activeSection === 'participants'" id="tournament-description-right-part-main-participants">
+        <table class="table table-bordered table-hover table-striped table-dark">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let participant of tournamentParticipants">
+              <td>{{ participant.participant_email }}</td>
+              <td>{{ participant.rank }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
       <div id="tournament-description-right-part-main-ladder">
 
       </div>
@@ -38,6 +78,11 @@
 
       </div>
     </div>
+
+    <div *ngIf="showMessage" class=" message alert alert-success ">
+      {{ message }}
+    </div>
+
   </div>
 </div>
 

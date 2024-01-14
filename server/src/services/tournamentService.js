@@ -94,10 +94,71 @@ async function getTournamentParticipantsList(id) {
 }
 
 
+async function participate(tournamentId, userId){
+    try {
+        const query = `
+            INSERT INTO participants (tournament, participant)
+            VALUES ($1, $2)
+        `;
+        const result = await pool.query(query, [tournamentId, userId]);
+        return result.rows;
+    } catch (error) {
+        console.error("Error participating in tournament:", error);
+        throw error;
+    }
+}
+
+async function unparticipate(tournamentId, userId){
+    try {
+        const query = `
+            DELETE FROM participants
+            WHERE tournament = $1 AND participant = $2
+        `;
+        const result = await pool.query(query, [tournamentId, userId]);
+        return result.rows;
+    } catch (error) {
+        console.error("Error unparticipating in tournament:", error);
+        throw error;
+    }
+}
+
+async function isUserAParticipantOfTournament(tournamentId, userId){
+    console.log("userid", userId);
+    console.log("tournament id", tournamentId);
+    try {
+        const query = `
+            SELECT * FROM participants
+            WHERE tournament = $1 AND participant = $2
+        `;
+        const result = await pool.query(query, [tournamentId, userId]);
+        return result.rows.length > 0;
+    } catch (error) {
+        console.error("Error checking if user is participant of tournament:", error);
+        throw error;
+    }
+}
+
+async function isUserOrganizerOfTournament(tournamentId, userId) {
+    try {
+        const query = `
+            SELECT * FROM tournaments
+            WHERE id = $1 AND organizer = $2
+        `;
+        const result = await pool.query(query, [tournamentId, userId]);
+        return result.rows.length > 0;
+    } catch (error) {
+        console.error("Error checking if user is organizer of tournament:", error);
+        throw error;
+    }
+}
 
 module.exports = {
   getUpcomingTournamentsPage,
   getTournamentInformation,
   getTournamentSponsors,
   getTournamentParticipantsList,
+  participate,
+  unparticipate,
+  isUserAParticipantOfTournament,
+  isUserOrganizerOfTournament
 };

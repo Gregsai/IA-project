@@ -12,9 +12,10 @@ import { MyTournamentsComponent } from './my-tournaments/my-tournaments.componen
 import { TournamentsComponent } from './tournaments/tournaments.component';
 import { CreateTournamentComponent } from './create-tournament/create-tournament.component';
 import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
+import { EditTournamentComponent } from './edit-tournament/edit-tournament.component';
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: TournamentsComponent},
   {path: 'sign-up', component: SignUpComponent},
   {path: 'sign-in', component: SignInComponent},
   {path: 'password-forgotten', component: PasswordForgottenComponent},
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path: 'my-tournaments', component: MyTournamentsComponent},
   {path: 'tournaments', component: TournamentsComponent},
   {path: 'create-tournament', component: CreateTournamentComponent},
+  {path: 'edit-tournament/:id', component: EditTournamentComponent},
   { path: 'tournament-description/:id', component: TournamentDescriptionComponent },
 
 ];

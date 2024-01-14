@@ -8,7 +8,6 @@
 
 
 #tournament-description-main{
-  background-color: red;
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -62,17 +61,115 @@
 }
 
 #tournament-description-right-part{
-  background-color: green;
   height: 100%;
   width: 75%;
+  margin-inline: 10px;
 }
 
 #tournament-description-right-part-header{
-  background-color: aliceblue;
+  margin-block: 5px;
+  padding: 5px;
+  border: solid 1px #14213D;
+  border-radius: 20px;
   height: 7%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+#tournament-description-right-part-header-sections {
+  display: flex;
+  width: 70%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#tournament-description-right-part-header-sections div{
+  padding: 5px;
+  width: 100%;
+}
+#tournament-description-right-part-header-sections .btn {
+  width: 100%;
+  background-color: #14213D;
+  color: #E5E5E5;
+  font-weight: bold;
+}
+
+#tournament-description-right-part-header-sections .btn:hover {
+  width: 100%;
+  background-color: #FFCC00;
+  color: #14213D;
+}
+
+.participants.active > .btn{
+  background-color: #FFCC00 !important;
+  color: #14213D !important;
+}
+
+#tournament-description-right-part-header-buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 30%;
+}
+
+
+.participate, .edit{
+  color: black;
+  background-color: #FFCC00;
+  border-color: #FFCC00;
+  width: 40%;
+  font-weight: bold;
+}
+.participate:hover, .edit:hover{
+  color: white;
+  background-color: #14213D;
+  border-color: #14213D;
+  width: 40%;
+  font-weight: bold;
+}
+
+.unparticipate{
+  color: black;
+  background-color: #FF004C;
+  border-color: #FF004C;
+  width: 40%;
+  font-weight: bold;
+}
+.unparticipate:hover{
+  color: white;
+  background-color: #B22222;
+  border-color: #B22222;
+  width: 40%;
+  font-weight: bold;
 }
 
 #tournament-description-right-part-main{
-  background-color: aqua;
-  height: 93%;
+  height: 73vh;
+  border: solid 1px #14213D;
+  border-radius: 20px;
+  overflow: auto;
+}
+
+.message {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+}
+
+#tournament-description-right-part-main-participants{
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: solid 1px #14213D;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.table{
+  margin: 0;
 }

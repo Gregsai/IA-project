@@ -16,4 +16,8 @@ export class CreateTournamentService {
     const createTournamentURL = `${this.baseURL}/create-tournament/create-tournament`;
     return this.http.post(createTournamentURL, tournamentData, {withCredentials: true});
   }
+  editTournament(tournamentData: any) {
+    const editTournamentURL = `${this.baseURL}/create-tournament/edit-tournament`;
+    return this.http.post(editTournamentURL, tournamentData, {withCredentials: true});
+  }
 }
