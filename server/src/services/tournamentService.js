@@ -94,16 +94,37 @@ async function getTournamentParticipantsList(id) {
 }
 
 
-async function participate(tournamentId, userId){
+async function participate(tournamentId, userId) {
     try {
-        const query = `
-            INSERT INTO participants (tournament, participant)
-            VALUES ($1, $2)
+        const countQuery = `
+            SELECT COUNT(*) AS count
+            FROM participants
+            WHERE tournament = $1
         `;
-        const result = await pool.query(query, [tournamentId, userId]);
-        return result.rows;
+        const countResult = await pool.query(countQuery, [tournamentId]);
+        const currentParticipantsCount = countResult.rows[0].count;
+
+        const maxParticipantsQuery = `
+            SELECT maxparticipants
+            FROM tournaments
+            WHERE id = $1
+        `;
+        const maxParticipantsResult = await pool.query(maxParticipantsQuery, [tournamentId]);
+        const maxParticipants = maxParticipantsResult.rows[0].maxparticipants;
+
+        if (currentParticipantsCount < maxParticipants) {
+            const insertQuery = `
+                INSERT INTO participants (tournament, participant)
+                VALUES ($1, $2)
+            `;
+            const result = await pool.query(insertQuery, [tournamentId, userId]);
+            return result.rows;
+        } else {
+            console.error("The maximum number of participants has been reached for this tournament.");
+            return "Max number of participants reached";
+        }
     } catch (error) {
-        console.error("Error participating in tournament:", error);
+        console.error("Error while participating to the tournament", error);
         throw error;
     }
 }

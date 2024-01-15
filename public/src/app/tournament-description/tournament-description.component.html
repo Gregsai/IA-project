@@ -83,6 +83,10 @@
       {{ message }}
     </div>
 
+    <div *ngIf="showErrorMessage" class=" message alert alert-danger ">
+      {{ errorMessage }}
+    </div>
+
   </div>
 </div>
 

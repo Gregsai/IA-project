@@ -64,10 +64,18 @@ async function participate(req, res) {
 
         const userId = await authenticationService.getUserIdInToken(token);
         
-        await tournamentService.participate(id, userId);
-        return res.status(200).json({
-            message: "Successfully participated in tournament"
-        });
+        const participationMessage = await tournamentService.participate(id, userId);
+
+        if (typeof participationMessage === 'string') {
+            return res.status(500).json({
+                error: "Error participating in tournament",
+                message: participationMessage
+            });
+        } else {
+            return res.status(200).json({
+                message: "Successfully participated in tournament"
+            });
+        }
     } catch (error) {
         return res.status(500).json({
             error: "Error participating in tournament",

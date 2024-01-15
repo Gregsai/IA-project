@@ -41,6 +41,8 @@ export class TournamentDescriptionComponent implements OnInit {
   isOrganizerOfTournament: string = '';
   showMessage: boolean = false;
   message: string = '';
+  showErrorMessage: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private elementRef: ElementRef,
@@ -205,8 +207,14 @@ export class TournamentDescriptionComponent implements OnInit {
           }, 5000);
         },
         (error) => {
-          console.error('Error fetching tournament sponsors:', error);
-        }
+          console.error('Error participating in the tournament:', error);
+          this.errorMessage = error.error.message;
+          this.showErrorMessage = true;
+          setTimeout(() => {
+            this.showErrorMessage = false;
+            this.errorMessage = ""
+          }, 5000);
+      }
       );
     });
   }
