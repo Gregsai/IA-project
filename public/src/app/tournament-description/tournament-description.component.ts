@@ -294,4 +294,20 @@ export class TournamentDescriptionComponent implements OnInit {
     this.authService.setRedirectUrl(`/tournament-description/${this.tournamentId}`);
     this.router.navigateByUrl(`/edit-tournament/${this.tournamentId}`);
   }
+
+
+  getIntoTournament() {
+    console.log("here")
+    this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
+      this.isLoggedIn = loggedIn;
+      this.authService.setRedirectUrl(`/tournament-description/${this.tournamentId}`);
+      if(!this.isLoggedIn) {
+        this.router.navigateByUrl('/sign-in');
+      } else {
+        const routeWithId = `/participate/${this.tournamentId}`;
+        this.router.navigate([routeWithId]);
+      }
+    });
+  }
+
 }

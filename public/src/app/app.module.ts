@@ -23,6 +23,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
 import { EditTournamentComponent } from './edit-tournament/edit-tournament.component';
+import { ParticipateComponent } from './participate/participate.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +39,9 @@ import { EditTournamentComponent } from './edit-tournament/edit-tournament.compo
     CreateTournamentComponent,
     TournamentsComponent,
     TournamentDescriptionComponent,
-    EditTournamentComponent
+    EditTournamentComponent,
+    ParticipateComponent,
+
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,52 @@
+<div class="user-form">
+  <h3>Participate</h3>
+  <div class="form-content">
+    <form #userForm="ngForm">
+      <div class="form-group">
+        <label for="licence-number">Licence number</label>
+        <input
+          type="number"
+          class="form-control"
+          id="licence-number"
+          name="licence-number"
+          [(ngModel)]="licenceNumber"
+          min="1"
+        />
+      </div>
+      <div class="form-group">
+        <label for="ranking">Ranking (if you have one)</label>
+        <input
+          type="number"
+          class="form-control"
+          id="ranking"
+          name="ranking"
+          [(ngModel)]="ranking"
+          min="0"
+        />
+      </div>
+      <p *ngIf="displayErrorMessage" class="error-message">
+        {{ errorMessage }}
+      </p>
+      <p *ngIf="showMessage" class="error-message">
+        {{ message }}
+      </p>
+      <div id="buttons">
+        <a
+          href="#"
+          (click)="redirectToTournamentDescription($event)"
+          [style.cursor]="'pointer'"
+        >
+          Go back ?
+        </a>
+        <button
+          type="button"
+          class="btn"
+          (click)="getIntoTournament()"
+          [disabled]="disableButton"
+        >
+          Participate
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

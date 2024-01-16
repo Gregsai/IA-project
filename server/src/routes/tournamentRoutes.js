@@ -11,6 +11,7 @@ router.get('/is-user-a-participant-of-tournament/:id', TournamentController.isUs
 router.get('/is-user-organizer-of-tournament/:id', TournamentController.isUserOrganizerOfTournament);
 
 router.post('/participate', TournamentController.participate);
+router.post('/getIntoTournament', TournamentController.getIntoTournament);
 router.post('/unparticipate', TournamentController.unparticipate);
 
 module.exports = router;

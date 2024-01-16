@@ -156,6 +156,40 @@ async function isUserOrganizerOfTournament(req, res){
     }
 }
 
+async function getIntoTournament(req, res) {
+    try {
+        const { id, licenceNumber, ranking} = req.body;
+
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(500).json({ error: 'Impossible to identify the user' });
+        }
+
+        const userId = await authenticationService.getUserIdInToken(token);
+        
+        console.log("controller licence ", licenceNumber)
+        console.log("controller ranking ", ranking)
+        const participationMessage = await tournamentService.getIntoTournament(id, userId, licenceNumber, ranking);
+
+        if (typeof participationMessage === 'string') {
+            return res.status(500).json({
+                error: "Error participating in tournament",
+                message: participationMessage
+            });
+        } else {
+            return res.status(200).json({
+                message: "Successfully participated in tournament"
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error participating in tournament",
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
     getUpcomingTournamentsPage,
     getTournamentInformation,
@@ -165,4 +199,5 @@ module.exports = {
     unparticipate,
     isUserAParticipantOfTournament,
     isUserOrganizerOfTournament,
+    getIntoTournament,
 };

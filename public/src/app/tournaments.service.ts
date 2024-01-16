@@ -61,4 +61,9 @@ export class TournamentsService {
     const isUserOrganizerOfTournament = `${this.baseURL}/tournaments/is-user-organizer-of-tournament/${id}`;
     return this.http.get<boolean>(isUserOrganizerOfTournament, { withCredentials: true });
   }
+
+  getIntoTournament(id: string, licenceNumber: number, ranking: number) {
+    const participateUrl = `${this.baseURL}/tournaments/getIntoTournament`;
+    return this.http.post(participateUrl, { id, licenceNumber, ranking }, { withCredentials: true })
+  }
 }
