@@ -174,20 +174,20 @@ export class TournamentDescriptionComponent implements OnInit {
 
   getDateFromISOString(date:string) {
     const dateObject = new Date(date);
+    console.log(dateObject)
     const year = dateObject.getFullYear();
     const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
     const day = dateObject.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
-  getTimeFromISOString(date:string) {
+  getTimeFromISOString(date: string) {
     const dateObject = new Date(date);
-    const hours = dateObject.getUTCHours().toString().padStart(2, '0');
-    const minutes = dateObject.getUTCMinutes().toString().padStart(2, '0');
-    const seconds = dateObject.getUTCSeconds().toString().padStart(2, '0');
+    const hours = dateObject.getHours().toString().padStart(2, '0');
+    const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+    const seconds = dateObject.getSeconds().toString().padStart(2, '0');
     return `${hours}:${minutes}:${seconds}`;
-  }
-
+}
   participate(){
     this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
       this.isLoggedIn = loggedIn;

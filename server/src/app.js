@@ -3,6 +3,8 @@ const cors = require("cors");
 const authenticationRoutes = require("./routes/authenticationRoutes");
 const createTournamentRoutes = require("./routes/createTournamentRoutes");
 const tournamentRoutes = require("./routes/tournamentRoutes");
+require("./services/scheduledService");
+
 const cookieParser = require('cookie-parser');
 
 const app = express();

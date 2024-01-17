@@ -6,33 +6,31 @@ async function getUpcomingTournamentsPage(startIndex, endIndex, searchTerm) {
     endIndex = parseInt(endIndex, 10);
     let countQuery = `
             SELECT COUNT(*) FROM tournaments 
-            WHERE name ILIKE $1
+            WHERE name ILIKE $1 AND applicationdeadline > NOW()
         `;
 
     let values = [`%${searchTerm}%`];
     const numberOfFilteredTournaments = await pool.query(countQuery, values);
-    console.log("There is ", numberOfFilteredTournaments.rows[0].count);
     let offset = 0;
     if (startIndex !== 0) {
-      console.log("Start index: " + startIndex);
       offset = startIndex - 1;
     }
 
     let query = `
             SELECT * FROM tournaments
-            WHERE name ILIKE $1
+            WHERE name ILIKE $1 AND applicationdeadline > NOW()
             ORDER BY date
-            LIMIT $2 OFFSET $3
+            LIMIT $2 OFFSET $3 
         `;
 
     const limit = endIndex - startIndex;
-    console.log("startIndex: " + startIndex);
-    console.log("limit: " + limit);
     const result = await pool.query(query, [
       `%${searchTerm}%`,
       limit,
       startIndex,
     ]);
+
+    console.log("There is ", result.rows);
     return {
       totalCount: numberOfFilteredTournaments.rows[0].count,
       tournaments: result.rows,
@@ -52,7 +50,6 @@ async function getTournamentInformation(id) {
             WHERE tournaments.id = $1
         `;
     const result = await pool.query(query, [id]);
-
     if (result.rows.length === 0) {
       throw new Error(`Tournament with id ${id} not found`);
     }
@@ -276,7 +273,9 @@ async function getIntoTournament(tournamentId, userId, licenceNumber, ranking) {
       console.error("Error while participating in the tournament", error);
       throw error;
     }
-  }
+}
+  
+
   
 
 module.exports = {
