@@ -20,6 +20,7 @@ router.get('/get-enrolled-in-tournaments-page', TournamentController.getEnrolled
 
 router.get('/get-tournament-ladder/:id', TournamentController.getTournamentLadder);
 router.get('/get-user-matches/:id', TournamentController.getUserMatches);
+router.get('/get-tournament-tree/:id', TournamentController.getTournamentTree);
 
 
 router.post('/select-winner', TournamentController.selectWinner);

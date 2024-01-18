@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -17,6 +17,9 @@ import {OGCMapTile, Vector as VectorSource} from 'ol/source.js';
 import { Vector as VectorLayer} from 'ol/layer.js';
 import {fromLonLat} from 'ol/proj.js';
 import { AuthenticationService } from '../authentication.service';
+interface TournamentTree {
+  [roundId: string]: Array<any>;
+}
 @Component({
   selector: 'app-tournament-description',
   templateUrl: './tournament-description.component.html',
@@ -29,6 +32,7 @@ export class TournamentDescriptionComponent implements OnInit {
   userMatches: any;
   tournamentSponsors: any;
   tournamentParticipants: any;
+  @Input() tournamentTree: TournamentTree | undefined;
   numberOfParticipants: number = 0;
   numberOfRankedPlayers: number = 0;
   address = '';
@@ -36,6 +40,7 @@ export class TournamentDescriptionComponent implements OnInit {
   longitude: number = 1;
   displayLadder: boolean = false;
   displayMatchs: boolean = false;
+  displayTree: boolean = false;
   activeSection:string = 'participants';
   isLoggedIn: boolean = false;
   tournamentId:string = '';
@@ -126,6 +131,10 @@ export class TournamentDescriptionComponent implements OnInit {
         if(currentDate >= this.tournamentData.date) {
           this.displayLadder = true;
           this.displayMatchs = true;
+
+        if (this.tournamentData.seedingtype === 'treerandom' || this.tournamentData.seedingtype === 'treerank') {
+          this.displayTree = true;
+        }
         }
         this.geocodeAddress();
       },
@@ -172,6 +181,18 @@ export class TournamentDescriptionComponent implements OnInit {
     );
   }
 
+  getTournamentTree(tournamentId: string) {
+    this.activeSection = 'tree'
+    this.tournamentsService.getTournamentTree(tournamentId).subscribe(
+      (data) => {
+        console.log("tree data",data);
+        this.tournamentTree = data;
+      },
+      (error) => {
+        console.error('Error fetching tournament participants:', error);
+      }
+    );
+  }
   getUserMatches(tournamentId: string) {
     this.activeSection = 'matchs'
     this.tournamentsService.getUserMatches(tournamentId).subscribe(

@@ -88,7 +88,10 @@ export class TournamentsService {
     const getTournamentLadderUrl = `${this.baseURL}/tournaments/get-tournament-ladder/${id}`;
     return this.http.get<any>(getTournamentLadderUrl, { withCredentials: true });
   }
-
+  getTournamentTree(id: string): Observable<any> {
+    const getTournamentTreeUrl = `${this.baseURL}/tournaments/get-tournament-tree/${id}`;
+    return this.http.get<any>(getTournamentTreeUrl, { withCredentials: true });
+  }
   getUserMatches(id: string): Observable<any> {
     const getUserMatchesUrl = `${this.baseURL}/tournaments/get-user-matches/${id}`;
     return this.http.get<any>(getUserMatchesUrl, { withCredentials: true });

@@ -113,6 +113,10 @@
   background-color: #FFCC00 !important;
   color: #14213D !important;
 }
+.tree.active > .btn{
+  background-color: #FFCC00 !important;
+  color: #14213D !important;
+}
 #tournament-description-right-part-header-buttons{
   display: flex;
   flex-direction: row;
@@ -255,4 +259,71 @@
 
 .table{
   margin: 0;
+}
+
+#tournament-description-right-part-main-tree {
+  display: flex;
+}
+
+.round-container {
+  margin-right: 20px;
+}
+.round{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.round-content{
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.tree-match{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #14213D;
+  color: #E5E5E5;
+  border: #14213D solid 1px;
+  border-radius: 20px;
+  overflow: hidden;
+  width: 20vw;
+  margin: 10px;
+}
+
+.tree-match-participant-1 ,.tree-match-participant-2{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.tree-match-participant-1.won ,.tree-match-participant-2.won{
+  background-color: #d4edda;
+  color: #14213D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.tree-match-participant-1.lost ,.tree-match-participant-2.lost{
+  background-color: #f8d7da;
+  color: #14213D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }

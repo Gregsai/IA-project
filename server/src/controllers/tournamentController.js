@@ -242,6 +242,19 @@ async function getTournamentLadder(req, res){
     }
 }
 
+async function getTournamentTree(req, res){
+    try {
+        const { id } = req.params;
+        const { tree } = await tournamentService.getTournamentTree(id);
+        return res.status(200).json(tree);
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tree",
+            message: error.message
+        });
+    }
+}
+
 async function getUserMatches(req, res){
     try {
         const { id } = req.params;
@@ -298,5 +311,6 @@ module.exports = {
     getEnrolledInTournamentsPage,
     getTournamentLadder,
     getUserMatches,
+    getTournamentTree,
     selectWinner
 };

@@ -36,6 +36,9 @@
         <div *ngIf="displayMatchs" id="tournament-description-right-part-header-matchs" class = "matchs" [class.active]="activeSection === 'matchs'" (click)='getUserMatches(tournamentId)'>
           <button class="btn matchs">Matchs</button>
         </div>
+        <div *ngIf="displayTree" id="tournament-description-right-part-header-tree" class = "tree" [class.active]="activeSection === 'tree'" (click)='getTournamentTree(tournamentId)'>
+          <button class="btn tree">Tree</button>
+        </div>
       </div>
       <div id="tournament-description-right-part-header-buttons">
         <button *ngIf="isParticipantOfTournament=== 'false'" type="button" class="btn participate" (click)="getIntoTournament()">
@@ -108,6 +111,28 @@
         </div>
 
       </div>
+
+      <div *ngIf="activeSection === 'tree'" id="tournament-description-right-part-main-tree">
+        <div *ngFor="let round of tournamentTree | keyvalue" class="round-container">
+          <div class="round">
+            <div *ngFor="let match of round.value" class="round-content">
+              <div class="tree-match">
+                <div class="tree-match-participant-1" [class.won]="match.winner === match.participant1" [class.lost]="match.winner && match.winner !== match.participant1">
+                  {{ match.participant1_email }}
+                </div>
+                <div class="tree-match-vs">
+                  VS
+                </div>
+                <div class="tree-match-participant-2" [class.won]="match.winner === match.participant2" [class.lost]="match.winner && match.winner !== match.participant2">
+                  {{ match.participant2_email }}
+                  <div *ngIf="!match.participant2">No Opponnent</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       <div id="tournament-description-right-part-main-ladder">
 
