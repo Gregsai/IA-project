@@ -27,12 +27,9 @@ async function createTournament(
         address,
         seedingType,
       ];
-      console.log("inserted values",tournamentInsertValues)
       const tournamentResult = await pool.query(tournamentInsertQuery, tournamentInsertValues);
       const tournamentId = tournamentResult.rows[0].id;
-      console.log(tournamentResult)
 
-      console.log(tournamentId);
       if (sponsors && sponsors.length > 0) {
         for (const sponsor of sponsors) {
           const { name, url, imageurl } = sponsor;
@@ -99,13 +96,10 @@ async function createTournament(
       WHERE tournament = $1`;
     const deleteSponsorsValues = [id];
     
-    // Delete existing sponsors for the tournament
     await pool.query(deleteSponsorsQuery, deleteSponsorsValues);
     
-    // Insert new sponsors one by one
     if (sponsors && sponsors.length > 0) {
       for (const sponsor of sponsors) {
-        console.log(sponsor);
         const { name, url, tournament, imageurl } = sponsor;
         const sponsorInsertQuery = `
           INSERT INTO sponsors(name, url, tournament, imageurl)
@@ -113,7 +107,7 @@ async function createTournament(
         const sponsorInsertValues = [
           name || null,
           url || null,
-          id, // Use the original tournament id
+          id, 
           imageurl || null,
         ];
         await pool.query(sponsorInsertQuery, sponsorInsertValues);

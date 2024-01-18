@@ -5,7 +5,7 @@
     </button>
   </div>
   <div id="my-tournaments-main">
-    <h1>Created Tournaments</h1>
+    <h1>Enrolled In Tournaments</h1>
     <div class="container-fluid mt-4">
       <div id="search-term">
         <input type="text"  class="form-control mb-3" [(ngModel)]="searchTerm" (input)="updateSearch()" placeholder="Search tournaments">
@@ -21,7 +21,6 @@
               <th scope="col">Max Participants</th>
               <th scope="col">Application Deadline</th>
               <th scope="col">Address</th>
-              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -35,11 +34,6 @@
               <td>{{ tournament.maxparticipants }}</td>
               <td>{{ tournament.applicationdeadline | date:'dd/MM/yyyy HH:mm:ss' }}</td>
               <td>{{ tournament.address }}</td>
-              <td>
-                <button type="button" class="btn sign-in-up edit-button" (click)="editTournament(tournament.id)">
-                  Edit
-                </button>
-              </td>
             </tr>
           </tbody>
 

@@ -58,9 +58,15 @@ export class EditTournamentComponent implements OnInit {
         this.name = this.tournamentData.name;
         this.discipline = this.tournamentData.discipline;
         this.seedingType = this.tournamentData.seedingType;
-        this.date = new Date(this.tournamentData.date).toISOString().slice(0, 16);
+        const tournamentDate = new Date(this.tournamentData.date);
+        tournamentDate.setHours(tournamentDate.getHours() + 1);
+        const formattedDate = tournamentDate.toISOString().slice(0, 16);
+        this.date = formattedDate;
         this.address = this.tournamentData.address;
-        this.applicationDeadline = new Date(this.tournamentData.applicationdeadline).toISOString().slice(0, 16);
+        const tournamentApplicationDeadline = new Date(this.tournamentData.applicationdeadline);
+        tournamentApplicationDeadline.setHours(tournamentApplicationDeadline.getHours() + 1);
+        const formattedApplicationDeadline = tournamentApplicationDeadline.toISOString().slice(0, 16);
+        this.applicationDeadline = formattedApplicationDeadline;
         this.maxParticipants = this.tournamentData.maxparticipants;
         this.seedingType = this.tournamentData.seedingtype;
       },

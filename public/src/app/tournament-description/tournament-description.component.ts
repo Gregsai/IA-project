@@ -25,6 +25,8 @@ import { AuthenticationService } from '../authentication.service';
 export class TournamentDescriptionComponent implements OnInit {
   private map!: Map;
   tournamentData: any;
+  tournamentLadder: any;
+  userMatches: any;
   tournamentSponsors: any;
   tournamentParticipants: any;
   numberOfParticipants: number = 0;
@@ -43,6 +45,7 @@ export class TournamentDescriptionComponent implements OnInit {
   message: string = '';
   showErrorMessage: boolean = false;
   errorMessage: string = '';
+  userParticipantId: any;
 
   constructor(
     private elementRef: ElementRef,
@@ -142,7 +145,8 @@ export class TournamentDescriptionComponent implements OnInit {
     );
   }
 
-  private getTournamentParticipantsList(tournamentId: string) {
+  getTournamentParticipantsList(tournamentId: string) {
+    this.activeSection = 'participants'
     this.tournamentsService.getTournamentParticipantsList(tournamentId).subscribe(
       (data) => {
         this.tournamentParticipants = data;
@@ -155,6 +159,54 @@ export class TournamentDescriptionComponent implements OnInit {
     );
   }
 
+  getTournamentLadder(tournamentId: string) {
+    this.activeSection = 'ladder'
+    this.tournamentsService.getTournamentLadder(tournamentId).subscribe(
+      (data) => {
+        console.log(data);
+        this.tournamentLadder = data;
+      },
+      (error) => {
+        console.error('Error fetching tournament participants:', error);
+      }
+    );
+  }
+
+  getUserMatches(tournamentId: string) {
+    this.activeSection = 'matchs'
+    this.tournamentsService.getUserMatches(tournamentId).subscribe(
+      (data) => {
+        console.log(data);
+        this.userMatches = data.userMatches;
+        this.userParticipantId = data.userParticipantId;
+      },
+      (error) => {
+        console.error('Error fetching tournament participants:', error);
+      }
+    );
+  }
+
+  displayResultBox(match: any) {
+    if (match.winner) {
+      return false;
+    } else if (match.winnerparticipant1 && this.userParticipantId === match.participant1) {
+      return false;
+    } else if (match.winnerparticipant2 && this.userParticipantId === match.participant2) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  selectWinner(participantId: number, matchId: number) {
+    this.tournamentsService.selectWinner(participantId, matchId, this.userParticipantId).subscribe(
+      (data) => {
+        this.getUserMatches(this.tournamentId);
+      },
+      (error) => {
+        console.error('Error fetching tournament participants:', error);
+      }
+  )}
   geocodeAddress() {
     this.geocodingService.geocode(this.address).subscribe(
       (data: any) => {

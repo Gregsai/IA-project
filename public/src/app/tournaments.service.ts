@@ -66,4 +66,36 @@ export class TournamentsService {
     const participateUrl = `${this.baseURL}/tournaments/getIntoTournament`;
     return this.http.post(participateUrl, { id, licenceNumber, ranking }, { withCredentials: true })
   }
+
+  getUserTournamentsPage(startIndex: number, endIndex: number, searchTerm: string): Observable<TournamentResponse> {
+    const getTournamentsUrl = `${this.baseURL}/tournaments/get-user-tournaments-page`;
+    const params = new HttpParams()
+      .set('startIndex', startIndex.toString())
+      .set('endIndex', endIndex.toString())
+      .set('searchTerm', searchTerm);
+    return this.http.get<TournamentResponse>(getTournamentsUrl, { params, withCredentials: true });
+  }
+  getEnrolledInTournamentsPage(startIndex: number, endIndex: number, searchTerm: string): Observable<TournamentResponse> {
+    const getTournamentsUrl = `${this.baseURL}/tournaments/get-enrolled-in-tournaments-page`;
+    const params = new HttpParams()
+      .set('startIndex', startIndex.toString())
+      .set('endIndex', endIndex.toString())
+      .set('searchTerm', searchTerm);
+    return this.http.get<TournamentResponse>(getTournamentsUrl, { params, withCredentials: true });
+  }
+
+  getTournamentLadder(id: string): Observable<any> {
+    const getTournamentLadderUrl = `${this.baseURL}/tournaments/get-tournament-ladder/${id}`;
+    return this.http.get<any>(getTournamentLadderUrl, { withCredentials: true });
+  }
+
+  getUserMatches(id: string): Observable<any> {
+    const getUserMatchesUrl = `${this.baseURL}/tournaments/get-user-matches/${id}`;
+    return this.http.get<any>(getUserMatchesUrl, { withCredentials: true });
+  }
+
+  selectWinner(participantId: number, matchId: number, userParticipantId: number) {
+    const participateUrl = `${this.baseURL}/tournaments/select-winner`;
+    return this.http.post(participateUrl, { participantId, matchId, userParticipantId }, { withCredentials: true })
+  }
 }

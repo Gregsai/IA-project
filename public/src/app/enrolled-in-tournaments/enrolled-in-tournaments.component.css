@@ -1,0 +1,106 @@
+#my-tournaments{
+  display: flex;
+  flex-direction: column;
+  }
+  #my-tournaments-header{
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    border: solid 1px;
+    border-radius: 20px;
+    padding: 10px;
+  }
+  .create-tournament-button{
+    color: black;
+    width: 20%;
+    font-weight: bold;
+    margin-inline: 10px;
+    background-color: #FFCC00;
+    border-color: #FFCC00;
+  }
+
+  .edit-button{
+    color: black;
+    width: 90%;
+    font-weight: bold;
+    margin-right: 50px;
+    background-color: #FFCC00;
+    border-color: #FFCC00;
+  }
+  .edit-button:hover{
+    color: #E5E5E5;
+    width: 90%;
+    font-weight: bold;
+    margin-right: 50px;
+    background-color: #14213D;
+    border-color: #14213D;
+  }
+  h1 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-inline: 20px;
+    color: #14213D;
+  }
+
+  #search-term {
+    width: 50%;
+  }
+
+  #search-term input {
+    width: 100%;
+    font-size: 15px;
+    border-radius: 30px;
+    border: 1px solid black;
+    padding-left: 20px;
+    text-align: center;
+    background-color: #E5E5E5;
+    color: #14213D;
+  }
+
+  #tournament-table {
+    border: 1px solid black;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+
+  .table {
+    margin: 0;
+    border-radius: 30px;
+    overflow: hidden;
+    font-size: 13px;
+    min-width: 70vw;
+  }
+
+  .container-fluid {
+    height: 63vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #FCA311;
+    color: black;
+  }
+
+  .page-item > button{
+    background-color: #363A3F;
+    color: #E5E5E5;
+  }
+
+  .page-item > button:hover{
+    background-color: #FCA311;
+  }
+  .pagination .page-link.active {
+    background-color: #FCA311;
+    border-color: #FCA311;
+    color: white;
+  }
+
+  .tournament-name > a{
+    color: white;
+    font-weight: bold;
+  }

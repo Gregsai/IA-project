@@ -30,7 +30,6 @@ async function getUpcomingTournamentsPage(startIndex, endIndex, searchTerm) {
       startIndex,
     ]);
 
-    console.log("There is ", result.rows);
     return {
       totalCount: numberOfFilteredTournaments.rows[0].count,
       tournaments: result.rows,
@@ -145,8 +144,7 @@ async function unparticipate(tournamentId, userId) {
 }
 
 async function isUserAParticipantOfTournament(tournamentId, userId) {
-  console.log("userid", userId);
-  console.log("tournament id", tournamentId);
+
   try {
     const query = `
             SELECT * FROM participants
@@ -179,8 +177,7 @@ async function isUserOrganizerOfTournament(tournamentId, userId) {
 
 async function getIntoTournament(tournamentId, userId, licenceNumber, ranking) {
     
-    console.log("licence", licenceNumber)
-    console.log("rank", ranking);
+
     try {
       const deadlineQuery = `
         SELECT applicationdeadline
@@ -216,7 +213,7 @@ async function getIntoTournament(tournamentId, userId, licenceNumber, ranking) {
     const existingRankQuery = `
     SELECT COUNT(*) AS count
     FROM participants
-    WHERE tournament = $1 AND rank = $2
+    WHERE tournament = $1 AND rank = $2 AND rank > 0
   `;
   const existingRankResult = await pool.query(existingRankQuery, [tournamentId, ranking]);
   const existingRankCount = existingRankResult.rows[0].count;
@@ -276,7 +273,217 @@ async function getIntoTournament(tournamentId, userId, licenceNumber, ranking) {
 }
   
 
+async function getUserTournamentsPage(startIndex, endIndex, searchTerm, userId) {
+  try {
+    startIndex = parseInt(startIndex, 10);
+    endIndex = parseInt(endIndex, 10);
+    let countQuery = `
+            SELECT COUNT(*) FROM tournaments 
+            WHERE name ILIKE $1 AND organizer = $2
+        `;
+
+    let values = [`%${searchTerm}%`, userId];
+    const numberOfFilteredTournaments = await pool.query(countQuery, values);
+    let offset = 0;
+    if (startIndex !== 0) {
+      offset = startIndex - 1;
+    }
+
+    let query = `
+            SELECT * FROM tournaments
+            WHERE name ILIKE $1 AND organizer = $2
+            ORDER BY date
+            LIMIT $3 OFFSET $4 
+        `;
+
+    const limit = endIndex - startIndex;
+    const result = await pool.query(query, [
+      `%${searchTerm}%`,
+      userId,
+      limit,
+      startIndex,
+    ]);
+
+    return {
+      totalCount: numberOfFilteredTournaments.rows[0].count,
+      tournaments: result.rows,
+    };
+  } catch (error) {
+    console.error("Error getting tournaments per page:", error);
+    throw error;
+  }
+}
   
+async function getEnrolledInTournamentsPage(startIndex, endIndex, searchTerm, userId) {
+  try {
+    startIndex = parseInt(startIndex, 10);
+    endIndex = parseInt(endIndex, 10);
+
+    let countQuery = `
+      SELECT COUNT(*) FROM tournaments 
+      WHERE name ILIKE $1 AND id IN (SELECT tournament FROM participants WHERE participant = $2)
+    `;
+
+    let values = [`%${searchTerm}%`, userId];
+    const numberOfFilteredTournaments = await pool.query(countQuery, values);
+
+    let offset = 0;
+    if (startIndex !== 0) {
+      offset = startIndex - 1;
+    }
+
+    let query = `
+      SELECT * FROM tournaments
+      WHERE name ILIKE $1 AND id IN (SELECT tournament FROM participants WHERE participant = $2)
+      ORDER BY date
+      LIMIT $3 OFFSET $4 
+    `;
+
+    const limit = endIndex - startIndex;
+    const result = await pool.query(query, [
+      `%${searchTerm}%`,
+      userId,
+      limit,
+      startIndex,
+    ]);
+
+    return {
+      totalCount: numberOfFilteredTournaments.rows[0].count,
+      tournaments: result.rows,
+    };
+  } catch (error) {
+    console.error("Error getting tournaments per page:", error);
+    throw error;
+  }
+}
+
+async function getTournamentLadder(id) {
+  try {
+    const query = `
+    SELECT participants.*, users.email as participant_email
+    FROM participants
+    JOIN users ON participants.participant = users.id
+    WHERE participants.tournament = $1
+    ORDER BY participants.score DESC, 
+             CASE WHEN participants.rank <> 0 THEN participants.rank ELSE NULL END ASC
+  `;
+    const result = await pool.query(query, [id]);
+    const ladder = result.rows;
+    return { ladder };
+  } catch (error) {
+    console.error("Error getting ladder:", error);
+    throw error;
+  }
+}
+
+async function getUserMatches(id, userId) {
+  try {
+    const query = `
+      SELECT 
+        matches.*, 
+        rounds.round, 
+        users1.email as participant1_email, 
+        users2.email as participant2_email
+      FROM matches
+      JOIN rounds ON matches.round = rounds.id
+      JOIN participants AS p1 ON matches.participant1 = p1.id
+      JOIN participants AS p2 ON matches.participant2 = p2.id
+      JOIN users AS users1 ON p1.participant = users1.id
+      JOIN users AS users2 ON p2.participant = users2.id
+      WHERE
+        (p1.participant = $1 OR p2.participant = $1)
+        AND rounds.tournament = $2
+      ORDER BY rounds.round;
+    `;
+
+    const result = await pool.query(query, [userId, id]);
+    const userMatches = result.rows;
+
+    const query2 = `
+    SELECT 
+    id
+  FROM participants
+  WHERE participant = $1 AND tournament = $2;
+`;
+  const result2 = await pool.query(query2, [userId, id]);
+    const userParticipantId = result2.rows[0].id;
+    return {userMatches, userParticipantId};
+  } catch (error) {
+    console.error("Error getting user matches:", error);
+    throw error;
+  }
+}
+
+async function selectWinner(participantId, matchId, userParticipantId) {
+  try {
+    const matchQuery = `
+      SELECT participant1, participant2
+      FROM matches
+      WHERE id = $1
+    `;
+    const matchResult = await pool.query(matchQuery, [matchId]);
+    const { participant1, participant2 } = matchResult.rows[0];
+
+    let winnerColumnToUpdate;
+    if (participant1 === userParticipantId) {
+      winnerColumnToUpdate = 'winnerparticipant1';
+    } else if (participant2 === userParticipantId) {
+      winnerColumnToUpdate = 'winnerparticipant2';
+    } else {
+      throw new Error('userParticipantId ne correspond à aucun participant dans le match.');
+    }
+
+    const updateQuery = `
+      UPDATE matches
+      SET ${winnerColumnToUpdate} = $1
+      WHERE id = $2
+    `;
+    await pool.query(updateQuery, [participantId, matchId]);
+
+    await updateWinner(matchId)
+  } catch (error) {
+    console.error("Error selecting winner:", error);
+    throw error;
+  }
+}
+
+async function updateWinner(matchId) {
+  try {
+    const matchQuery = `
+      SELECT participant1, participant2, winnerparticipant1, winnerparticipant2
+      FROM matches
+      WHERE id = $1
+    `;
+    const matchResult = await pool.query(matchQuery, [matchId]);
+    const { participant1, participant2, winnerparticipant1, winnerparticipant2 } = matchResult.rows[0];
+
+    if (!winnerparticipant1 || !winnerparticipant2) {
+      return;
+    } else if (winnerparticipant1 !== winnerparticipant2) { 
+      const resetQuery = `
+        UPDATE matches
+        SET winnerparticipant1 = NULL, winnerparticipant2 = NULL
+        WHERE id = $1`;
+        await pool.query(resetQuery, [matchId]);
+    } else {
+      const updateWinner = `
+        UPDATE matches
+        SET winner = $1
+        WHERE id = $2`;
+      await pool.query(updateWinner, [winnerparticipant1, matchId]);
+      
+      const updateScoreQuery = `
+      UPDATE participants
+      SET score = score + 1
+      WHERE id = $1`;
+    await pool.query(updateScoreQuery, [winnerparticipant1]);
+    }
+  }catch(error) {
+    console.error("Error updating winner:", error);
+    throw error;
+  }
+}
+
 
 module.exports = {
   getUpcomingTournamentsPage,
@@ -288,4 +495,10 @@ module.exports = {
   isUserAParticipantOfTournament,
   isUserOrganizerOfTournament,
   getIntoTournament,
+  getUserTournamentsPage,
+  getEnrolledInTournamentsPage,
+  getTournamentLadder,
+  getUserMatches,
+  selectWinner,
+  updateWinner
 };

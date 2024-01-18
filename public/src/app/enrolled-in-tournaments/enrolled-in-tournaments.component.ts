@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
 import { Router } from '@angular/router';
 import { TournamentsService } from '../tournaments.service';
@@ -15,11 +15,11 @@ interface Tournament {
   seedingtype: string;
 }
 @Component({
-  selector: 'app-my-tournaments',
-  templateUrl: './my-tournaments.component.html',
-  styleUrls: ['./my-tournaments.component.css']
+  selector: 'app-enrolled-in-tournaments',
+  templateUrl: './enrolled-in-tournaments.component.html',
+  styleUrl: './enrolled-in-tournaments.component.css'
 })
-export class MyTournamentsComponent implements OnInit {
+export class EnrolledInTournamentsComponent {
   isLoggedIn: boolean = false;
   displayedTournaments: Tournament[] = [];
   totalPages: number = 0;
@@ -41,7 +41,7 @@ export class MyTournamentsComponent implements OnInit {
         this.authService.setRedirectUrl('/my-tournaments');
         this.router.navigateByUrl('/sign-in');
       } else {
-       this.getUserTournaments();
+       this.getEnrolledInTournaments();
       }
     });
   }
@@ -78,32 +78,32 @@ export class MyTournamentsComponent implements OnInit {
 
   selectvaluesIntournament(page: number) {
     this.currentPage = page;
-    this.getUserTournaments();
+    this.getEnrolledInTournaments();
   }
 
   previousPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.getUserTournaments();
+      this.getEnrolledInTournaments();
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.getUserTournaments();
+      this.getEnrolledInTournaments();
     }
   }
 
   updateSearch() {
     this.currentPage = 1;
-    this.getUserTournaments();
+    this.getEnrolledInTournaments();
   }
 
-  private getUserTournaments() {
+  private getEnrolledInTournaments() {
     const startIndex = (this.currentPage - 1) * this.tournamentsPerPage;
     const endIndex = startIndex + this.tournamentsPerPage ;
-    this.subscription = this.tournamentsService.getUserTournamentsPage(startIndex, endIndex, this.searchTerm).subscribe(
+    this.subscription = this.tournamentsService.getEnrolledInTournamentsPage(startIndex, endIndex, this.searchTerm).subscribe(
       (response: any) => {
         this.numberOfUpcomingTournamentsValue = response.totalCount;
         this.totalPages = Math.ceil(response.totalCount / this.tournamentsPerPage);

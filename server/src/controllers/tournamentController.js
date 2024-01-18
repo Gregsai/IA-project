@@ -54,7 +54,6 @@ async function getTournamentParticipantsList(req, res) {
 async function participate(req, res) {
     try {
         const { id } = req.body;
-        console.log("participating on tournament", id)
 
         const token = req.cookies.token;
         
@@ -87,7 +86,6 @@ async function participate(req, res) {
 async function unparticipate(req, res) {
     try {
         const { id } = req.body;
-        console.log("unparticipating on tournament", id)
 
         const token = req.cookies.token;
         
@@ -168,8 +166,7 @@ async function getIntoTournament(req, res) {
 
         const userId = await authenticationService.getUserIdInToken(token);
         
-        console.log("controller licence ", licenceNumber)
-        console.log("controller ranking ", ranking)
+
         const participationMessage = await tournamentService.getIntoTournament(id, userId, licenceNumber, ranking);
 
         if (typeof participationMessage === 'string') {
@@ -190,6 +187,103 @@ async function getIntoTournament(req, res) {
     }
 }
 
+async function getUserTournamentsPage(req, res) {
+    try {
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(500).json({ error: 'Impossible to identify the user' });
+        }
+
+        const userId = await authenticationService.getUserIdInToken(token);
+        
+        const { startIndex, endIndex, searchTerm } = req.query;
+        const { totalCount, tournaments } = await tournamentService.getUserTournamentsPage(startIndex, endIndex, searchTerm, userId);
+        return res.status(200).json({ totalCount, tournaments });
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tournaments",
+            message: error.message
+        });
+    }
+}
+
+async function getEnrolledInTournamentsPage(req, res) {
+    try {
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(500).json({ error: 'Impossible to identify the user' });
+        }
+
+        const userId = await authenticationService.getUserIdInToken(token);
+        
+        const { startIndex, endIndex, searchTerm } = req.query;
+        const { totalCount, tournaments } = await tournamentService.getEnrolledInTournamentsPage(startIndex, endIndex, searchTerm, userId);
+        return res.status(200).json({ totalCount, tournaments });
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting tournaments",
+            message: error.message
+        });
+    }
+}
+
+async function getTournamentLadder(req, res){
+    try {
+        const { id } = req.params;
+        const { ladder } = await tournamentService.getTournamentLadder(id);
+        return res.status(200).json(ladder);
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting ladder",
+            message: error.message
+        });
+    }
+}
+
+async function getUserMatches(req, res){
+    try {
+        const { id } = req.params;
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(500).json({ error: 'Impossible to identify the user' });
+        }
+    
+        const userId = await authenticationService.getUserIdInToken(token);
+        
+        const {userMatches, userParticipantId} = await tournamentService.getUserMatches(id, userId);
+        return res.status(200).json({ userMatches, userParticipantId });
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error getting user matches",
+            message: error.message
+        });
+    }
+}
+
+async function selectWinner(req, res) {
+    try {
+        const { participantId, matchId, userParticipantId } = req.body;
+
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(500).json({ error: 'Impossible to identify the user' });
+        }
+
+        const result = await tournamentService.selectWinner(participantId, matchId, userParticipantId);
+        return res.status(200).json({ message:"successfully manage vote"});
+
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error voting match result",
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
     getUpcomingTournamentsPage,
     getTournamentInformation,
@@ -200,4 +294,9 @@ module.exports = {
     isUserAParticipantOfTournament,
     isUserOrganizerOfTournament,
     getIntoTournament,
+    getUserTournamentsPage,
+    getEnrolledInTournamentsPage,
+    getTournamentLadder,
+    getUserMatches,
+    selectWinner
 };

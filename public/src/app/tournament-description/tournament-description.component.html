@@ -27,13 +27,13 @@
   <div id="tournament-description-right-part">
     <div id="tournament-description-right-part-header">
       <div id="tournament-description-right-part-header-sections">
-        <div id="tournament-description-right-part-header-participants" class="participants" [class.active]="activeSection === 'participants'" >
+        <div id="tournament-description-right-part-header-participants" class="participants" [class.active]="activeSection === 'participants'" (click)='getTournamentParticipantsList(tournamentId)'>
           <button class="btn">Participants</button>
         </div>
-        <div *ngIf="displayLadder" id="tournament-description-right-part-header-ladder" class = "ladder" [class.active]="activeSection === 'ladder'">
+        <div *ngIf="displayLadder" id="tournament-description-right-part-header-ladder" class = "ladder" [class.active]="activeSection === 'ladder'" (click)='getTournamentLadder(tournamentId)'>
           <button class="btn ">Ladder</button>
         </div>
-        <div *ngIf="displayMatchs" id="tournament-description-right-part-header-matchs" class = "matchs" [class.active]="activeSection === 'matchs'">
+        <div *ngIf="displayMatchs" id="tournament-description-right-part-header-matchs" class = "matchs" [class.active]="activeSection === 'matchs'" (click)='getUserMatches(tournamentId)'>
           <button class="btn matchs">Matchs</button>
         </div>
       </div>
@@ -69,6 +69,44 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div *ngIf="activeSection === 'ladder'" id="tournament-description-right-part-main-participants">
+        <table class="table table-bordered table-hover table-striped table-dark">
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th>Email</th>
+              <th>Initial Rank</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let participant of tournamentLadder; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ participant.participant_email }}</td>
+              <td>{{ participant.rank }}</td>
+              <td>{{ participant.score }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div *ngIf="activeSection === 'matchs'" id="tournament-description-right-part-main-matches">
+        <div *ngFor="let match of userMatches" class="match-element" [class.active]="match.winner === userParticipantId" [class.inactive]="match.winner && match.winner !== userParticipantId">
+          <div class="contestants">
+            {{match.participant1_email}} <strong>VS</strong> {{match.participant2_email}}
+          </div>
+          <div *ngIf="displayResultBox(match)" class="result-box">
+            <p class="require-result"><strong>Select winner : </strong></p>
+            <div class="result-buttons">
+              <button (click)="selectWinner(match.participant1, match.id)" class="btn btn-primary"> Left Player </button>
+              <button (click)="selectWinner(match.participant2, match.id)" class="btn btn-primary"> Right Player</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div id="tournament-description-right-part-main-ladder">

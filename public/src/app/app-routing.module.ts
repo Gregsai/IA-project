@@ -14,6 +14,7 @@ import { CreateTournamentComponent } from './create-tournament/create-tournament
 import { TournamentDescriptionComponent } from './tournament-description/tournament-description.component';
 import { EditTournamentComponent } from './edit-tournament/edit-tournament.component';
 import { ParticipateComponent } from './participate/participate.component';
+import { EnrolledInTournamentsComponent } from './enrolled-in-tournaments/enrolled-in-tournaments.component';
 
 const routes: Routes = [
   { path: '', component: TournamentsComponent },
@@ -23,9 +24,10 @@ const routes: Routes = [
   {path: 'reset-password/:token', component: ResetPasswordComponent},
   {path: 'verify-account/:email/:send-email', component: SendVerificationEmailComponent },
   {path: 'verify-account/:token', component: VerifyAccountComponent },
-  {path: 'my-tournaments', component: MyTournamentsComponent},
+  {path: 'create-tournaments', component: MyTournamentsComponent},
   {path: 'tournaments', component: TournamentsComponent},
-  {path: 'create-tournament', component: CreateTournamentComponent},
+  { path: 'create-tournament', component: CreateTournamentComponent },
+  {path:'enrolled-in-tournaments', component: EnrolledInTournamentsComponent},
   {path: 'edit-tournament/:id', component: EditTournamentComponent},
   { path: 'tournament-description/:id', component: TournamentDescriptionComponent },
   {

@@ -14,4 +14,13 @@ router.post('/participate', TournamentController.participate);
 router.post('/getIntoTournament', TournamentController.getIntoTournament);
 router.post('/unparticipate', TournamentController.unparticipate);
 
+
+router.get('/get-user-tournaments-page', TournamentController.getUserTournamentsPage);
+router.get('/get-enrolled-in-tournaments-page', TournamentController.getEnrolledInTournamentsPage);
+
+router.get('/get-tournament-ladder/:id', TournamentController.getTournamentLadder);
+router.get('/get-user-matches/:id', TournamentController.getUserMatches);
+
+
+router.post('/select-winner', TournamentController.selectWinner);
 module.exports = router;
